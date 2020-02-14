@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -17,12 +18,16 @@ import uk.ac.man.cs.eventlite.entities.Venue;
 @Service
 public class VenueServiceImpl implements VenueService {
 
+	@Autowired
+	private VenueRepository VenueRepository;	
+	
 	private final static Logger log = LoggerFactory.getLogger(VenueServiceImpl.class);
 
 	private final static String DATA = "data/venues.json";
 
 	@Override
 	public long count() {
+		/*
 		long count = 0;
 		Iterator<Venue> i = findAll().iterator();
 
@@ -30,11 +35,13 @@ public class VenueServiceImpl implements VenueService {
 			i.next();
 		}
 
-		return count;
+		return count; */ // delete if not needed
+		return VenueRepository.count();
 	}
 
 	@Override
 	public Iterable<Venue> findAll() {
+		/*
 		Iterable<Venue> venues;
 
 		try {
@@ -48,7 +55,8 @@ public class VenueServiceImpl implements VenueService {
 			venues = Collections.emptyList();
 		}
 
-		return venues;
+		return venues; */ // delete if not needed
+		return VenueRepository.findAll();
 	}
 
 }
