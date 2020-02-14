@@ -19,7 +19,6 @@ import uk.ac.man.cs.eventlite.entities.Event;
 @Service
 public class EventServiceImpl implements EventService {
 	
-	@SuppressWarnings("unused")
 	@Autowired
 	private EventRepository eventRepository;
 
