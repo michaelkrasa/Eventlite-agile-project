@@ -1,6 +1,4 @@
 package uk.ac.man.cs.eventlite.dao;
-
-import hello.entities.Greeting;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
 public interface VenueService {
