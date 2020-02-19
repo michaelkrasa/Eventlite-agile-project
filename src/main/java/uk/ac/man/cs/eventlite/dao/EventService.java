@@ -7,4 +7,8 @@ public interface EventService {
 	public long count();
 
 	public Iterable<Event> findAll();
+	
+	public <S extends Event> S save(S event);
+	
+//	public void save(Event event);
 }
