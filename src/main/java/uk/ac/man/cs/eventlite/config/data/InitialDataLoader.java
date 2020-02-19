@@ -15,6 +15,7 @@ import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.entities.Venue;
 
 @Component
 @Profile({ "default", "test" })
@@ -35,40 +36,22 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			log.info("Database already populated. Skipping data initialization.");
 			return;
 		}else if (eventService.count() == 0) {
+			Venue testVenue = new Venue();
 			Event testEvent = new Event();
+			testVenue.setName("Kilburn 1.8");
+			testVenue.setId(1);
+			testVenue.setCapacity(1000);			
+			
 			testEvent.setId(1);
 			testEvent.setName("COMP23412 Showcase, group G");
 			testEvent.setDate(LocalDate.of(2020,05,11));
 			testEvent.setTime(LocalTime.of(15,00));
 			testEvent.setVenue(1);
-			// This line causes error
+			
+			venueService.save(testVenue);
 			eventService.save(testEvent);
-			log.info("Added event (" + testEvent.getId() + ") to the database.");
-			
-			Event testEvent2 = new Event();
-			testEvent2.setId(2);
-			testEvent2.setName("COMP23412 Showcase, group H");
-			testEvent2.setDate(LocalDate.of(2020,05,05));
-			testEvent2.setTime(LocalTime.of(10,00));
-			testEvent2.setVenue(1);
-			// This line causes error
-			eventService.save(testEvent2);
-			log.info("Added event (" + testEvent2.getId() + ") to the database.");
-			
-			Event testEvent3 = new Event();
-			testEvent3.setId(3);
-			testEvent3.setName("COMP23412 Showcase, group F");
-			testEvent3.setDate(LocalDate.of(2020,05,07));
-			testEvent3.setTime(LocalTime.of(11,00));
-			testEvent3.setVenue(1);
-			// This line causes error
-			eventService.save(testEvent3);
-			log.info("Added event (" + testEvent3.getId() + ") to the database.");
-			
-			return;
+
 		}
-
 		// Build and save initial models here.
-
 	}
 }
