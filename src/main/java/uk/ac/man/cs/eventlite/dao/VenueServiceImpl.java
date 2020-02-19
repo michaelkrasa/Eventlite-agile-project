@@ -20,9 +20,6 @@ public class VenueServiceImpl implements VenueService {
 	
 	@Autowired
 	private VenueRepository venueRepository;
-
-	@Autowired
-	private VenueRepository VenueRepository;	
 	
 	private final static Logger log = LoggerFactory.getLogger(VenueServiceImpl.class);
 
@@ -30,41 +27,18 @@ public class VenueServiceImpl implements VenueService {
 
 	@Override
 	public long count() {
-		/*
-		long count = 0;
-		Iterator<Venue> i = findAll().iterator();
-
-		for (; i.hasNext(); count++) {
-			i.next();
-		}
-
-		return count; */ // delete if not needed
-		return VenueRepository.count();
+		return venueRepository.count();
 	}
 
 	@Override
 	public Iterable<Venue> findAll() {
-		/*
-		Iterable<Venue> venues;
-
-		try {
-			ObjectMapper mapper = new ObjectMapper();
-			InputStream in = new ClassPathResource(DATA).getInputStream();
-
-			venues = mapper.readValue(in, mapper.getTypeFactory().constructCollectionType(List.class, Venue.class));
-		} catch (Exception e) {
-			// If we can't read the file, then the event list is empty...
-			log.error("Exception while reading file '" + DATA + "': " + e);
-			venues = Collections.emptyList();
-		}
-
-		return venues; */ // delete if not needed
-		return VenueRepository.findAll();
+		return venueRepository.findAll();
 	}
 	
 	@Override
-	public void save(Venue venue) {
-		venueRepository.save(venue);
+	public <V extends Venue> V save(V venue) {
+		return(venueRepository.save(venue));
 	}
+
 
 }

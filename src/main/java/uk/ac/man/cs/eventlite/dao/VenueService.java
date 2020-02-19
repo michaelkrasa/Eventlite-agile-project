@@ -7,5 +7,6 @@ public interface VenueService {
 
 	public Iterable<Venue> findAll();
 	
-	public void save(Venue venue);
+	public <V extends Venue> V save(V venue);
+
 }
