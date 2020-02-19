@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -31,8 +32,21 @@ public class EventServiceImpl implements EventService {
 		return eventRepository.count();
 	}
 	
-	@Override public Iterable<Event> findAll() { 
+	@Override 
+	public Iterable<Event> findAll() { 
 		return eventRepository.findAll(); 
 	}
+	
+	@Override
+	public <S extends Event> S save(S event) {
+		return(eventRepository.save(event));
+	}
+	
+//	@Override
+//	@Transactional
+//	public void save(Event event) {
+//		eventRepository.save(event);
+//	}
+	
 }
 	  
