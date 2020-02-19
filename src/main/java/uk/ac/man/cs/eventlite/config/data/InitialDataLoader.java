@@ -37,15 +37,34 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		}else if (eventService.count() == 0) {
 			Event testEvent = new Event();
 			testEvent.setId(1);
-			testEvent.setName("Test Event");
-			testEvent.setDate(LocalDate.now());
-			testEvent.setTime(LocalTime.now());
+			testEvent.setName("COMP23412 Showcase, group G");
+			testEvent.setDate(LocalDate.of(2020,05,11));
+			testEvent.setTime(LocalTime.of(15,00));
 			testEvent.setVenue(1);
-			
 			// This line causes error
 			eventService.save(testEvent);
-			
 			log.info("Added event (" + testEvent.getId() + ") to the database.");
+			
+			Event testEvent2 = new Event();
+			testEvent2.setId(2);
+			testEvent2.setName("COMP23412 Showcase, group H");
+			testEvent2.setDate(LocalDate.of(2020,05,05));
+			testEvent2.setTime(LocalTime.of(10,00));
+			testEvent2.setVenue(1);
+			// This line causes error
+			eventService.save(testEvent2);
+			log.info("Added event (" + testEvent2.getId() + ") to the database.");
+			
+			Event testEvent3 = new Event();
+			testEvent3.setId(3);
+			testEvent3.setName("COMP23412 Showcase, group F");
+			testEvent3.setDate(LocalDate.of(2020,05,07));
+			testEvent3.setTime(LocalTime.of(11,00));
+			testEvent3.setVenue(1);
+			// This line causes error
+			eventService.save(testEvent3);
+			log.info("Added event (" + testEvent3.getId() + ") to the database.");
+			
 			return;
 		}
 
