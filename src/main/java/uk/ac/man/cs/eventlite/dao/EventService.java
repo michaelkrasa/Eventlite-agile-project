@@ -10,5 +10,4 @@ public interface EventService {
 	
 	public <S extends Event> S save(S event);
 	
-//	public void save(Event event);
 }
