@@ -70,6 +70,15 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			eventService.save(testEvent3);
 			log.info("Added event (" + testEvent3.getId() + ") to the database.");
 			
+			Event testEvent4 = new Event();
+//			testEvent4.setId(5);
+			testEvent4.setName("COMP23412 Showcase, group Test");
+			testEvent4.setDate(LocalDate.of(2020,05,07));
+			testEvent4.setTime(LocalTime.of(10,00));
+			testEvent4.setVenue(testVenue);
+			eventService.save(testEvent4);
+			log.info("Added event (" + testEvent4.getId() + ") to the database.");
+			
 		}
 		// Build and save initial models here.
 	}
