@@ -4,12 +4,40 @@
       layout:decorate="~{layouts/default}">
 <head>
   <title>All events</title>
+  
+  	<!-- Search script -->
+	<script>
+	function searchFunction() {
+	  var input, filter, table, tr, td, i, txtValue;
+	  input = document.getElementById("searchInput");
+	  filter = input.value.toUpperCase();
+	  table = document.getElementById("eventsTable");
+	  tr = table.getElementsByTagName("tr");
+	  for (i = 0; i < tr.length; i++) {
+	    td = tr[i].getElementsByTagName("td")[0];
+	    if (td) {
+	      txtValue = td.textContent || td.innerText;
+	      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+	        tr[i].style.display = "";
+	      } else {
+	        tr[i].style.display = "none";
+	      }
+	    }       
+	  }
+	}
+	</script>
+  
 </head>
 <body>
   <div layout:fragment="content">
     <h1>All events</h1>
+    
+    <!-- Search form -->
+	<div class="md-form mt-0">
+	  <input class="form-control" type="text" id="searchInput" onkeyup="searchFunction()" placeholder="Search by name"  aria-label="Search">
+	</div>
 
-    <table class="table table-striped table-hover">
+    <table class="table table-striped table-hover" id="eventsTable">
       <thead>
         <tr>
           <th><i class="fas fa-bolt"></i> Event</th>
@@ -29,6 +57,7 @@
     </table>
 
   </div>
+  
 
 </body>
 </html>
