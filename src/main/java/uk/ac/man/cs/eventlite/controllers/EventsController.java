@@ -42,7 +42,7 @@ public class EventsController {
 			model.addAttribute("event", new Event());
 		}
 
-		return "event/new";
+		return "events/new";
 	}
 	
 	// POST request made when submitting form on "event/new", to create the new event
@@ -53,7 +53,7 @@ public class EventsController {
 		// If form has errors, stay on event/new (stay on form)
 		if (errors.hasErrors()) {
 			model.addAttribute("event", event);
-			return "event/new";
+			return "events/new";
 		}
 		
 		// If no errors, save the event
@@ -61,7 +61,7 @@ public class EventsController {
 		redirectAttrs.addFlashAttribute("ok_message", "New event added.");
 		
 		// Go back to /event
-		return "redirect:/event";
+		return "redirect:/events";
 	}
 
 }
