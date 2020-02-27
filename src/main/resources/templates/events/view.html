@@ -20,7 +20,10 @@
       </thead>
       <tbody>
         <tr>
-          <td th:text="${event}">My Event</td>
+          <td th:text="${event.name}">My Event</td>
+          <td th:text="${event.venue.name}">Event venue</td>
+          <td th:text="${{event.date}}">Event date</td>
+          <td th:text="${{event.time}}">Event time</td>
         </tr>
       </tbody>
     </table>

@@ -41,15 +41,14 @@ public class EventsController {
 		
 	@RequestMapping(value = "/{eventId}", method = RequestMethod.GET)
     public String getEventById(@PathVariable String eventId, Model model) {
-		log.error("here");
-		log.info("eventId: " + eventId);
-		log.info("as long: " + Long.parseLong(eventId));
 		
 		Optional<Event> event = eventService.findById(Long.parseLong(eventId));
-		log.info("event: " + event.toString());
-				
-		 
-		model.addAttribute("event", event);
+		
+		if(event.isEmpty()) {
+			return getAllEvents(model);
+		}
+		
+		model.addAttribute("event", event.get());
 		
 		return "events/view";
 	}
