@@ -1,5 +1,6 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
@@ -94,5 +95,14 @@ public class EventsControllerTest {
 		verify(eventService).findAll();
 		verifyZeroInteractions(event);
 		verifyZeroInteractions(venue);
+	}
+	
+	@Test
+	public void getEventFromID() throws Exception {
+		assertFalse(eventService.findById((long) 1).equals(null));
+
+		mvc.perform(get("/events/1").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("events/view")).andExpect(handler().methodName("getEventById"));
+
 	}
 }
