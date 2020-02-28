@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,14 +37,23 @@ public class EventServiceImpl implements EventService {
 	}
 	
 	@Override 
-	public Iterable<Event> findAll() { 
-		
+	public Iterable<Event> findAll() { 	
 		return eventRepository.findAll(Sort.by("date", "time")); 
 	}
 	
 	@Override
 	public <S extends Event> S save(S event) {
 		return(eventRepository.save(event));
+	}
+	
+	@Override 
+	public void deleteById(Long ID) {
+		eventRepository.deleteById(ID);
+	} 
+	
+	@Override 
+	public Optional<Event> findById(Long ID) {
+		return eventRepository.findById(ID);
 	}
 	
 }
