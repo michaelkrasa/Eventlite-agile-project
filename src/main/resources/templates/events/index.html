@@ -26,7 +26,7 @@
           <td th:text="${{e.date}}">Event date</td>
           <td th:text="${{e.time}}">Event time</td>
           <td>
-          	<a href="/update"> Update</a>
+          	<a class="btn btn-primary" type="button" th:href="@{/events/update/?id={id}(id=${e.id})}" th:text="Update">Update</a>
           </td>
         </tr>
       </tbody>
