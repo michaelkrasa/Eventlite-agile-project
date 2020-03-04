@@ -10,4 +10,6 @@ public interface EventService {
 	
 	public <S extends Event> S save(S event);
 	
+	public Iterable<Event> findAllByNameContainingIgnoreCase(String name);
+	
 }
