@@ -15,7 +15,7 @@
 		<p th:text="${event.venue.name}">Venue</p>
 		
 		<h2>Event date</h2>
-		<p th:text="${event.date}">Date</p>
+		<p th:text="${#temporals.format(event.date, 'dd LLLL yyyy')}">Date</p>
 				
 		<h2>Event time</h2>
 		<p th:text="${event.time}">Time</p>
