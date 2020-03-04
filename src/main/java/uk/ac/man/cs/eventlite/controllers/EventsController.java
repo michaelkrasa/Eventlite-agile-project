@@ -2,6 +2,8 @@ package uk.ac.man.cs.eventlite.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -14,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
+
+import uk.ac.man.cs.eventlite.entities.Event;
 
 @Controller
 @RequestMapping(value = "/events", produces = { MediaType.TEXT_HTML_VALUE })
@@ -36,6 +40,13 @@ public class EventsController {
 	public String updateEvent(Model model, @RequestParam String id) {
 		log.info("Update method called");
 		log.info("id: " + id);
+		
+		long idLong = Long.parseLong(id);
+		
+		Optional<Event> event = eventService.findById(idLong);
+		if (event.isPresent()) {
+			model.addAttribute("eventToUpdate", event.get());
+		}
 		
 		return "events/update";
 	}
