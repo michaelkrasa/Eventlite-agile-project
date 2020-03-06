@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
-
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
@@ -40,7 +39,7 @@ public class EventServiceImpl implements EventService {
 	}
 	
 	@Override 
-	public Iterable<Event> findAll() { 
+	public Iterable<Event> findAll() { 	
 		return eventRepository.findAll(Sort.by("date", "time")); 
 	}
 	
@@ -53,10 +52,15 @@ public class EventServiceImpl implements EventService {
 	public <S extends Event> S save(S event) {
 		return(eventRepository.save(event));
 	}
-
-	@Override
-	public Optional<Event> findById(Long eventId) {
-		return eventRepository.findById(eventId);
+	
+	@Override 
+	public void deleteById(Long ID) {
+		eventRepository.deleteById(ID);
+	} 
+	
+	@Override 
+	public Optional<Event> findById(Long ID) {
+		return eventRepository.findById(ID);
 	}
 	
 }

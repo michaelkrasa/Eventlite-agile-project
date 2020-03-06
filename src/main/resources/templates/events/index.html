@@ -67,6 +67,13 @@
           <td th:text="${e.venue.name}">Event venue</td>
           <td th:text="${{e.date}}">Event date</td>
           <td th:text="${{e.time}}">Event time</td>
+                    
+            <div sec:authorize="isAuthenticated()">
+          		<td>
+          			<a th:href="@{/events/delete_event(ID=${e.getId()})}" class="btn btn-danger">Delete</a> 
+          		</td>
+          	</div>
+          	          	
         </tr>
       </tbody>
     </table>

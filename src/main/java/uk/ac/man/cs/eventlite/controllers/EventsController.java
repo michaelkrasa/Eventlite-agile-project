@@ -4,22 +4,26 @@ import java.util.Optional;
 
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
+import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
-
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
 
@@ -54,6 +58,23 @@ public class EventsController {
 		model.addAttribute("event", event.get());
 		
 		return "events/view";
+	}
+	
+	@RequestMapping(method = RequestMethod.PUT)
+	public Optional<Event> findById(Long ID) {
+		return eventService.findById(ID);	
+	}
+	
+	// DELETE request made when deleting form on "event" - to delete an event
+	@RequestMapping(value ="delete_event", method = RequestMethod.GET)
+	public String deleteEvent(Long ID) { 	
+		// check to find if ID exists
+		if (eventService.findById(ID).isPresent()) {
+			eventService.deleteById(ID);
+		}	
+		// Go back to the current page
+		return "/events"; 
+
 	}
 
 	@RequestMapping(value = "/foundEvents", method = RequestMethod.GET)
