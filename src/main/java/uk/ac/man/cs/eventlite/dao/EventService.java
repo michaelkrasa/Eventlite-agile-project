@@ -18,4 +18,6 @@ public interface EventService {
 	public Optional<Event> findById(Long eventId);
 	
 	
+	public Iterable<Event> findAllByNameContainingIgnoreCase(String name);
+	
 }

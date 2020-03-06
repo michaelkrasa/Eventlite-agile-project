@@ -15,15 +15,18 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
+
+import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
 
 @Controller
 @RequestMapping(value = "/events", produces = { MediaType.TEXT_HTML_VALUE })
 public class EventsController {
-
+	
 	private final static Logger log = LoggerFactory.getLogger(EventsController.class);
 	
 	@Autowired
@@ -53,4 +56,11 @@ public class EventsController {
 		return "events/view";
 	}
 
+	@RequestMapping(value = "/foundEvents", method = RequestMethod.GET)
+	public String getAllByName(@RequestParam (value = "search", required = false) String name, Model model) {
+		model.addAttribute("search", eventService.findAllByNameContainingIgnoreCase(name));
+		
+		return "events/index";
+	}
+	
 }
