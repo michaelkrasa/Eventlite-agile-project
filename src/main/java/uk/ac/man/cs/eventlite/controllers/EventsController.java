@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
@@ -23,6 +24,9 @@ public class EventsController {
 
 	@Autowired
 	private EventService eventService;
+	
+	@Autowired 
+	private VenueService venueService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String getAllEvents(Model model) {
@@ -38,10 +42,17 @@ public class EventsController {
 	// GET request made by button, taking user to page "event/new" to input event details
 	@RequestMapping(value = "/new", method = RequestMethod.GET)
 	public String newEvent(Model model) {
+		
 		if (!model.containsAttribute("event")) {
 			model.addAttribute("event", new Event());
 		}
-
+		
+		// Send "venues" as response parameter to events/new (for venue dropdown)
+		if (!model.containsAttribute("venues")) {
+			model.addAttribute("venues", venueService.findAll());
+		}
+		
+		
 		return "events/new";
 	}
 	
@@ -53,14 +64,15 @@ public class EventsController {
 		// If form has errors, stay on event/new (stay on form)
 		if (errors.hasErrors()) {
 			model.addAttribute("event", event);
+			model.addAttribute("venues", venueService.findAll()); // Reload venues 
 			return "events/new";
-		}
+		}	
 		
 		// If no errors, save the event
 		eventService.save(event);
 		redirectAttrs.addFlashAttribute("ok_message", "New event added.");
 		
-		// Go back to /event
+		// Go back to /events
 		return "redirect:/events";
 	}
 
