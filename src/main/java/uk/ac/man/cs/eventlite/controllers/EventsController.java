@@ -41,7 +41,7 @@ public class EventsController {
 
 		model.addAttribute("events", eventService.findAll());
 		
-		log.error("events laoded");
+		log.error("events loaded");
 				
 		return "events/index";
 	}
@@ -65,16 +65,15 @@ public class EventsController {
 		return eventService.findById(ID);	
 	}
 	
-	// DELETE request made when deleting form on "event" - to delete an event
-	@RequestMapping(value ="delete_event", method = RequestMethod.GET)
-	public String deleteEvent(Long ID) { 	
-		// check to find if ID exists
+	@RequestMapping(value ="delete_event", method = RequestMethod.GET) 
+	public String deleteEventByID(Long ID) { 	
+		// check to find if event with ID exists
 		if (eventService.findById(ID).isPresent()) {
 			eventService.deleteById(ID);
-		}	
-		// Go back to the current page
-		return "/events"; 
-
+			log.error("event " + ID + " deleted");
+		}		
+		// Go back to the events page
+		return "redirect:/events"; 
 	}
 
 	@RequestMapping(value = "/foundEvents", method = RequestMethod.GET)
