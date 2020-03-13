@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.handler;
@@ -148,6 +149,72 @@ public class EventsControllerTest {
 				.andExpect(view().name("events/index")).andExpect(handler().methodName("getEventById"));
 		
 		verify(eventService).findById(0L);
+	}
+	
+	@Test
+	public void deleteEventWithEvent() throws Exception { 
+		// data needed for test
+		Event e = new Event();
+		e.setName("testEvent");
+		e.setTime(null);
+		e.setDate(null);
+		e.setVenue(null);
+		long ID = (long)1;
+		e.setId(ID);	
+		Optional<Event> testEvent = Optional.of(e);
+		
+		// mocked methods
+		when(eventService.findById(ID)).thenReturn(testEvent);
+		doNothing().when(eventService).deleteById(ID);
+		
+		// assertion checks
+		assertEquals(eventService.findById(ID).get(), testEvent.get());
+		
+		// performing functions being tested
+		mvc.perform(get("/events/delete_event?ID=" + ID)
+			.accept(MediaType.TEXT_HTML))
+			.andExpect(status().isFound())
+			.andExpect(view().name("redirect:/events"))
+			.andExpect(handler().methodName("deleteEventByID"));	
+			
+		// verifying 
+		verify(eventService, VerificationModeFactory.times(2)).findById(ID);
+		verify(eventService, VerificationModeFactory.times(1)).deleteById(ID);	
+	}
+	
+	
+	@Test
+	public void deleteEventWhileNoEvent() throws Exception { 
+		// data needed for test
+		/*
+		Event e = new Event();
+		e.setName("testEvent");
+		e.setTime(null);
+		e.setDate(null);
+		e.setVenue(null);
+		long ID = (long)1;
+		e.setId(ID);	*/
+		long ID = (long)1;
+		Optional<Event> testEvent = Optional.empty(); //Optional.of(event);
+		
+		// mocked methods
+		when(eventService.findById(ID)).thenReturn(testEvent);
+		doNothing().when(eventService).deleteById(ID);
+		
+		// assertion checks
+		//assertFalse(  testEvent.isPresent());
+		assertFalse(eventService.findById(ID).isPresent());
+		
+		// performing functions being tested
+		mvc.perform(get("/events/delete_event?ID=" + ID)
+			.accept(MediaType.TEXT_HTML))
+			.andExpect(status().isFound())
+			.andExpect(view().name("redirect:/events"))
+			.andExpect(handler().methodName("deleteEventByID"));	
+			
+		// verifying 
+		verify(eventService, VerificationModeFactory.times(2)).findById(ID);
+		verify(eventService, VerificationModeFactory.times(0)).deleteById(ID);	
 	}
 	
 }
