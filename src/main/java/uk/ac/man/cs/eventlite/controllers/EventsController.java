@@ -1,5 +1,11 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.constraints.DecimalMin;
@@ -48,10 +54,24 @@ public class EventsController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String getAllEvents(Model model) {
-
-		model.addAttribute("events", eventService.findAll());
 		
 		log.error("events loaded");
+
+		List<Event> futureEvents = new ArrayList<Event>();
+		List<Event> pastEvents = new ArrayList<Event>();
+		
+		Iterable<Event> allEvents = eventService.findAll();
+		for(Event e: allEvents) {
+			if(e.getDate().compareTo(LocalDate.now())<0) pastEvents.add(e);
+			else futureEvents.add(e);
+		}
+		
+		// past events in reverse chronological order
+		Collections.reverse(pastEvents);
+
+		model.addAttribute("events", allEvents);
+		model.addAttribute("future_events", futureEvents);
+		model.addAttribute("past_events", pastEvents);
 				
 		return "events/index";
 	}
@@ -129,7 +149,22 @@ public class EventsController {
 
 	@RequestMapping(value = "/foundEvents", method = RequestMethod.GET)
 	public String getAllByName(@RequestParam (value = "search", required = false) String name, Model model) {
-		model.addAttribute("search", eventService.findAllByNameContainingIgnoreCase(name));
+		
+		List<Event> futureEvents = new ArrayList<Event>();
+		List<Event> pastEvents = new ArrayList<Event>();
+		
+		Iterable<Event> allEvents = eventService.findAllByNameContainingIgnoreCase(name);
+		for(Event e: allEvents) {
+			if(e.getDate().compareTo(LocalDate.now())<0) pastEvents.add(e);
+			else futureEvents.add(e);
+		}
+		
+		// past events in reverse chronological order
+		Collections.reverse(pastEvents);
+		
+		model.addAttribute("search", allEvents);
+		model.addAttribute("search_future", futureEvents);
+		model.addAttribute("search_past", pastEvents);
 		
 		return "events/index";
 	}

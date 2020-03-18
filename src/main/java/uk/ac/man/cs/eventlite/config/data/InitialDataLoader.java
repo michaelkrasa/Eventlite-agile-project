@@ -38,13 +38,11 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 		}else if (eventService.count() == 0) {
 			Venue testVenue = new Venue();
 			testVenue.setName("Kilburn G23");
-//			testVenue.setId(1);
 			testVenue.setCapacity(80);	
 			venueService.save(testVenue);
 			log.info("Added venue (" + testVenue.getId() + ") to the database.");
 			
 			Event testEvent = new Event();
-//			testEvent.setId(2);
 			testEvent.setName("COMP23412 Showcase, group G");
 			testEvent.setDate(LocalDate.of(2020,05,11));
 			testEvent.setTime(LocalTime.of(15,00));
@@ -53,7 +51,6 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			log.info("Added event (" + testEvent.getId() + ") to the database.");
 			
 			Event testEvent2 = new Event();
-//			testEvent2.setId(3);
 			testEvent2.setName("COMP23412 Showcase, group H");
 			testEvent2.setDate(LocalDate.of(2020,05,05));
 			testEvent2.setTime(LocalTime.of(10,00));
@@ -62,7 +59,6 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			log.info("Added event (" + testEvent2.getId() + ") to the database.");
 			
 			Event testEvent3 = new Event();
-//			testEvent3.setId(4);
 			testEvent3.setName("COMP23412 Showcase, group F");
 			testEvent3.setDate(LocalDate.of(2020,05,07));
 			testEvent3.setTime(LocalTime.of(11,00));
@@ -71,13 +67,44 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			log.info("Added event (" + testEvent3.getId() + ") to the database.");
 			
 			Event testEvent4 = new Event();
-//			testEvent4.setId(5);
 			testEvent4.setName("COMP23412 Showcase, group Test");
 			testEvent4.setDate(LocalDate.of(2020,05,07));
 			testEvent4.setTime(LocalTime.of(10,00));
 			testEvent4.setVenue(testVenue);
 			eventService.save(testEvent4);
 			log.info("Added event (" + testEvent4.getId() + ") to the database.");
+			
+			Event testEvent5 = new Event();
+			testEvent5.setName("COMP23412 Showcase, group Past");
+			testEvent5.setDate(LocalDate.of(2018,05,07));
+			testEvent5.setTime(LocalTime.of(14,00));
+			testEvent5.setVenue(testVenue);
+			eventService.save(testEvent5);
+			log.info("Added event (" + testEvent5.getId() + ") to the database.");
+			
+			Event testEvent6 = new Event();
+			testEvent6.setName("COMP23412 Showcase, group Past 2");
+			testEvent6.setDate(LocalDate.of(2018,05,07));
+			testEvent6.setTime(LocalTime.of(10,00));
+			testEvent6.setVenue(testVenue);
+			eventService.save(testEvent6);
+			log.info("Added event (" + testEvent6.getId() + ") to the database.");
+			
+			Event testEvent7 = new Event();
+			testEvent7.setName("COMP23412 Showcase, group Beta 3");
+			testEvent7.setDate(LocalDate.of(2018,03,07));
+			testEvent7.setTime(LocalTime.of(20,30));
+			testEvent7.setVenue(testVenue);
+			eventService.save(testEvent7);
+			log.info("Added event (" + testEvent7.getId() + ") to the database.");
+			
+			Event testEvent8 = new Event();
+			testEvent8.setName("COMP23412 Showcase, group Alpha 3");
+			testEvent8.setDate(LocalDate.of(2020,05,07));
+			testEvent8.setTime(LocalTime.of(10,00));
+			testEvent8.setVenue(testVenue);
+			eventService.save(testEvent8);
+			log.info("Added event (" + testEvent8.getId() + ") to the database.");
 			
 		}
 		// Build and save initial models here.
