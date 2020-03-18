@@ -11,7 +11,7 @@ public interface EventRepository extends CrudRepository<Event, Long>{
 
 	Iterable<Event> findAll(Sort by);
 
-	Iterable<Event> findAllByNameContainingIgnoreCase(String name);
+	Iterable<Event> findAllByNameContainingIgnoreCase(String name, Sort by);
 	
 	Optional<Event> findById(long id);
 	

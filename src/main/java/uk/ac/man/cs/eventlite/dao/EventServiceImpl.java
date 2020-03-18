@@ -40,12 +40,12 @@ public class EventServiceImpl implements EventService {
 	
 	@Override 
 	public Iterable<Event> findAll() { 	
-		return eventRepository.findAll(Sort.by("date", "time")); 
+		return eventRepository.findAll(Sort.by("date", "time", "name")); 
 	}
 	
 	@Override
 	public Iterable<Event> findAllByNameContainingIgnoreCase(String name){
-		return eventRepository.findAllByNameContainingIgnoreCase(name);
+		return eventRepository.findAllByNameContainingIgnoreCase(name, Sort.by("date", "time", "name"));
 	}
 	
 	@Override

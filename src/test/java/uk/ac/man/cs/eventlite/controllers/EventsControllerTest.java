@@ -12,8 +12,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -93,14 +95,45 @@ public class EventsControllerTest {
 
 	@Test
 	public void getIndexWithEvents() throws Exception {
-		when(eventService.findAll()).thenReturn(Collections.<Event> singletonList(event));
+		// create event
+		Event e = new Event();
+		e.setDate(LocalDate.now());
+		when(eventService.findAll()).thenReturn(Collections.<Event> singletonList(e));
 		when(venueService.findAll()).thenReturn(Collections.<Venue> singletonList(venue));
 
 		mvc.perform(get("/events").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 				.andExpect(view().name("events/index")).andExpect(handler().methodName("getAllEvents"));
 
 		verify(eventService).findAll();
-		verifyZeroInteractions(event);
+		verifyZeroInteractions(venue);
+	}
+	
+	@Test
+	public void getIndexWithNoEventsSearch() throws Exception {
+		when(eventService.findAllByNameContainingIgnoreCase(null)).thenReturn(Collections.<Event> emptyList());
+		when(venueService.findAll()).thenReturn(Collections.<Venue> emptyList());
+		
+		mvc.perform(get("/events/foundEvents").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("events/index")).andExpect(handler().methodName("getAllByName"));
+
+		verify(eventService).findAllByNameContainingIgnoreCase(null);
+		verifyZeroInteractions(venue);
+	}
+	
+	@Test
+	public void getIndexWithEventsSearch() throws Exception {
+		// create event
+		Event e = new Event();
+		e.setDate(LocalDate.now());
+		e.setName("test");
+		when(eventService.findAllByNameContainingIgnoreCase(null)).thenReturn(Collections.<Event> singletonList(e));
+		when(venueService.findAll()).thenReturn(Collections.<Venue> singletonList(venue));
+
+
+		mvc.perform(get("/events/foundEvents").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("events/index")).andExpect(handler().methodName("getAllByName"));
+
+		verify(eventService).findAllByNameContainingIgnoreCase(null);
 		verifyZeroInteractions(venue);
 	}
 	
