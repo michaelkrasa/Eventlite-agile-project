@@ -36,17 +36,27 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			log.info("Database already populated. Skipping data initialization.");
 			return;
 		}else if (eventService.count() == 0) {
+			
 			Venue testVenue = new Venue();
+			Venue testVenue2 = new Venue();
+			
 			testVenue.setName("Kilburn G23");
-			testVenue.setCapacity(80);	
+			testVenue.setCapacity(80);
+			
+			testVenue2.setName("Kilburn LF31");
+			testVenue2.setCapacity(60);
+						
 			venueService.save(testVenue);
+			venueService.save(testVenue2);
+			
 			log.info("Added venue (" + testVenue.getId() + ") to the database.");
+			log.info("Added venue (" + testVenue2.getId() + ") to the database.");
 			
 			Event testEvent = new Event();
 			testEvent.setName("COMP23412 Showcase, group G");
 			testEvent.setDate(LocalDate.of(2020,05,11));
 			testEvent.setTime(LocalTime.of(15,00));
-			testEvent.setVenue(testVenue);
+			testEvent.setVenue(testVenue2);
 			eventService.save(testEvent);
 			log.info("Added event (" + testEvent.getId() + ") to the database.");
 			
@@ -62,7 +72,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			testEvent3.setName("COMP23412 Showcase, group F");
 			testEvent3.setDate(LocalDate.of(2020,05,07));
 			testEvent3.setTime(LocalTime.of(11,00));
-			testEvent3.setVenue(testVenue);
+			testEvent3.setVenue(testVenue2);
 			eventService.save(testEvent3);
 			log.info("Added event (" + testEvent3.getId() + ") to the database.");
 			

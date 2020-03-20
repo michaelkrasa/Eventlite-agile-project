@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,6 +39,11 @@ public class VenueServiceImpl implements VenueService {
 	@Override
 	public <V extends Venue> V save(V venue) {
 		return(venueRepository.save(venue));
+	}
+
+	@Override
+	public Optional<Venue> findById(Long venueId) {
+		return venueRepository.findById(venueId);
 	}
 
 
