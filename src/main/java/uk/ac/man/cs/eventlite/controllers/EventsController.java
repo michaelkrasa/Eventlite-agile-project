@@ -25,6 +25,9 @@ public class EventsController {
 
 	private final static Logger log = LoggerFactory.getLogger(EventsController.class);
 	
+	@Autowired 
+	private VenueService venueService;
+	
 	@Autowired
 	private EventService eventService;
 
@@ -47,6 +50,8 @@ public class EventsController {
 		if (event.isPresent()) {
 			model.addAttribute("eventToUpdate", event.get());
 		}
+		
+		model.addAttribute("venues", venueService.findAll());
 		
 		return "events/update";
 	}
