@@ -11,6 +11,8 @@ public interface EventService {
 	
 	public <S extends Event> S save(S event);
 	
+	public void deleteById(Long ID);
+	
 	public Optional<Event> findById(Long eventId);
 	
 }

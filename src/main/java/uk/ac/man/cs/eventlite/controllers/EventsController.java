@@ -10,9 +10,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
@@ -24,6 +26,7 @@ import uk.ac.man.cs.eventlite.entities.Event;
 public class EventsController {
 
 	private final static Logger log = LoggerFactory.getLogger(EventsController.class);
+	private long idOfUpdatedEvent = 0;
 	
 	@Autowired 
 	private VenueService venueService;
@@ -44,9 +47,9 @@ public class EventsController {
 		log.info("Update method called");
 		log.info("id: " + id);
 		
-		long idLong = Long.parseLong(id);
+		idOfUpdatedEvent = Long.parseLong(id);
 		
-		Optional<Event> event = eventService.findById(idLong);
+		Optional<Event> event = eventService.findById(idOfUpdatedEvent);
 		if (event.isPresent()) {
 			model.addAttribute("eventToUpdate", event.get());
 		}
@@ -54,5 +57,12 @@ public class EventsController {
 		model.addAttribute("venues", venueService.findAll());
 		
 		return "events/update";
+	}
+	
+	@RequestMapping(value="/update", method=RequestMethod.POST)
+	public String saveUpdatedEvent(@ModelAttribute("updatedEvent") Event eventToUpdate, BindingResult errors, Model model) {
+		eventService.deleteById(idOfUpdatedEvent); // Delete old event
+		eventService.save(eventToUpdate); // Save new event
+		return "events/updated"; // Go to updated.html page
 	}
 }
