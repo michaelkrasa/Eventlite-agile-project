@@ -63,6 +63,6 @@ public class EventsController {
 	public String saveUpdatedEvent(@ModelAttribute("updatedEvent") Event eventToUpdate, BindingResult errors, Model model) {
 		eventService.deleteById(idOfUpdatedEvent); // Delete old event
 		eventService.save(eventToUpdate); // Save new event
-		return "events/updated"; // Go to updated.html page
+		return "redirect:/events"; // Go back to /events
 	}
 }
