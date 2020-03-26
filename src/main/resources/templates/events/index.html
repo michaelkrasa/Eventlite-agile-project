@@ -31,7 +31,6 @@
 	          <th><i class="fas fa-calendar"></i> Date</th>
 	          <th><i class="fas fa-clock"></i> Time</th>
 	          <th><i class="fas fa-map-marker-alt"></i> Venue</th>
-	          <th><i class="fas fa-update"></i> Update</th>
 	        </tr>
 	      </thead>
 	      <tbody>
@@ -46,9 +45,6 @@
 	          <td th:text="${{e.date}}">Event date</td>
 	          <td th:text="${{e.time}}">Event time</td>
 	          <td th:text="${e.venue.name}">Event venue</td>
-	          <td>
-          		<a class="btn btn-primary" type="button" th:href="@{/events/update/?id={id}(id=${e.id})}" th:text="Update">Update</a>
-          	</td>   	
 	        </tr>
 	      </tbody>
 	    </table>
@@ -92,7 +88,6 @@
 	          <th><i class="fas fa-calendar"></i> Date</th>
 	          <th><i class="fas fa-clock"></i> Time</th>
 	          <th><i class="fas fa-map-marker-alt"></i> Venue</th>
-	          <th><i class="fas fa-update"></i> Update</th>
 	        </tr>
 	      </thead>
 	      <tbody>
@@ -107,9 +102,6 @@
 	          <td th:text="${{e.date}}">Event date</td>
 	          <td th:text="${{e.time}}">Event time</td>
 	          <td th:text="${e.venue.name}">Event venue</td>
-	          <td>
-          		<a class="btn btn-primary" type="button" th:href="@{/events/update/?id={id}(id=${e.id})}" th:text="Update">Update</a>
-          	</td> 
 	        </tr>
 	      </tbody>
 	    </table>

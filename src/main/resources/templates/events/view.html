@@ -8,34 +8,39 @@
 
 <body>
   <div layout:fragment="content">
-	<blockquote>
-		<h1><p th:text="${event.name}">Name</p></h1>
-		
-		<h2>Venue</h2>
-		<p th:text="${event.venue.name}">Venue</p>
-		
-		<h2>Event date</h2>
-		<p th:text="${#temporals.format(event.date, 'dd LLLL yyyy')}">Date</p>
-				
-		<h2>Event time</h2>
-		<p th:text="${event.time}">Time</p>
-		
-	</blockquote>
+		<blockquote>
+			<h1><p th:text="${event.name}">Name</p></h1>
+			
+			<h2>Venue</h2>
+			<p th:text="${event.venue.name}">Venue</p>
+			
+			<h2>Event date</h2>
+			<p th:text="${#temporals.format(event.date, 'dd LLLL yyyy')}">Date</p>
+					
+			<h2>Event time</h2>
+			<p th:text="${event.time}">Time</p>
+			
+		</blockquote>
 	
-	<div>
-		<ul>
-			<li style="display:inline-block; margin-left:-30px;">
-				<a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="false"></i>
-				Back</a>
-			</li>
-			<li style="display:inline-block; margin-left:900px;">
-				<div sec:authorize="isAuthenticated()">
-					<a th:href="@{/events/delete_event(ID=${event.id})}" role="button" class="btn btn-danger">
-					Delete<i class="fas fa-trash" aria-hidden="false"></i></a> 			
-			    </div> 
-		    </li>
-	    </ul>
-    </div>  
+		<div>
+			<ul>
+				<li style="display:inline-block; margin-left:-40px;">
+					<a class="btn btn-primary" role="button" th:href="@{/events}"><i class="fas fa-arrow-left" aria-hidden="false"></i>
+					Back</a>
+				</li>
+				<li style="display:inline-block; margin-left:700px;">
+					<div sec:authorize="isAuthenticated()">
+						<a class="btn btn-primary" type="button" th:href="@{/events/update/?id={id}(id=${event.id})}" th:text="Update">Update</a>
+					</div>
+				</li>
+				<li style="display:inline-block; margin-left:50px;">
+					<div sec:authorize="isAuthenticated()">
+						<a th:href="@{/events/delete_event(ID=${event.id})}" role="button" class="btn btn-danger">
+						Delete<i class="fas fa-trash" aria-hidden="false"></i></a> 			
+				  </div> 
+			  </li>
+		  </ul>
+	  </div>  
   </div>
 </body>
 </html>
