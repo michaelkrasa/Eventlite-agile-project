@@ -1,5 +1,7 @@
 package uk.ac.man.cs.eventlite.controllers;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import javax.validation.constraints.DecimalMin;
@@ -30,13 +32,14 @@ public class VenuesController {
 	
 	@Autowired
 	private VenueService venueService;
+	
+	@Autowired
+	private EventService eventService;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public String getAllVenues(Model model) {
 
 		model.addAttribute("venues", venueService.findAll());
-		
-		log.error("venues laoded");
 				
 		return "venues/index";
 	}
@@ -51,6 +54,18 @@ public class VenuesController {
 		}
 		
 		model.addAttribute("venue", venue.get());
+		
+		
+		List<Event> events = eventService.findAllByVenue(venue.get());
+		for(Event e: events) {
+			if(e.getDate().compareTo(LocalDate.now())<0) {
+				events.remove(e); // remove events before today
+			}
+			else
+				break;	// in order last to first, as soon as one is after today, no more need to be removed
+		}
+		
+		model.addAttribute("events", events);
 		
 		return "venues/view";
 	}
