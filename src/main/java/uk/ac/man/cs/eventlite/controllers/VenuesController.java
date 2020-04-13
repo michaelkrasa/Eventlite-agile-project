@@ -1,6 +1,8 @@
 package uk.ac.man.cs.eventlite.controllers;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
@@ -70,6 +73,7 @@ public class VenuesController {
 		return "venues/view";
 	}
 	
+
 	@RequestMapping(method = RequestMethod.PUT)
 	public Optional<Venue> findById(Long ID) {
 		return venueService.findById(ID);	
@@ -89,4 +93,15 @@ public class VenuesController {
 		return "redirect:/venues"; 
 	}
 	
+
+	@RequestMapping(value = "/foundVenues", method = RequestMethod.GET)
+	public String getAllByName(@RequestParam (value = "search", required = false) String name, Model model) {
+		
+		Iterable<Venue> allVenues = venueService.findAllByNameContainingIgnoreCase(name);
+		
+		model.addAttribute("search", allVenues);
+		
+		return "venues/index";
+	}
+
 }

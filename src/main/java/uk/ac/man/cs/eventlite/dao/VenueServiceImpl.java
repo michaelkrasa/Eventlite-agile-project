@@ -9,6 +9,7 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
@@ -51,5 +52,11 @@ public class VenueServiceImpl implements VenueService {
 	public void deleteById(Long ID) {
 		venueRepository.deleteById(ID);
 	} 
+	
+	
+	@Override
+	public Iterable<Venue> findAllByNameContainingIgnoreCase(String name){
+		return venueRepository.findAllByNameContainingIgnoreCase(name, Sort.by("name"));
+	}
 
 }

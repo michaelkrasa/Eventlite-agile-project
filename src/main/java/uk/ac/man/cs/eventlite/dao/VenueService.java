@@ -15,5 +15,7 @@ public interface VenueService {
 	public Optional<Venue> findById(Long ID);
 
 	public void deleteById(Long ID); 
+	
+	public Iterable<Venue> findAllByNameContainingIgnoreCase(String name);
 
 }

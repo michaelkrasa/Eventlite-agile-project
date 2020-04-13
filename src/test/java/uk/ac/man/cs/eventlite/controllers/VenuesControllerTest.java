@@ -125,6 +125,30 @@ public class VenuesControllerTest {
 		verifyZeroInteractions(event);
 		verifyZeroInteractions(venue);
 	}
+	
+	@Test
+	public void getIndexWithNoVenuesSearch() throws Exception {
+		
+		when(venueService.findAll()).thenReturn(Collections.<Venue> emptyList());
+		
+		mvc.perform(get("/venues/foundVenues").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("venues/index")).andExpect(handler().methodName("getAllByName"));
+
+		verify(venueService).findAllByNameContainingIgnoreCase(null);
+		verifyZeroInteractions(venue);
+	}
+	
+	@Test
+	public void getIndexWithVenuesSearch() throws Exception {
+		
+		when(venueService.findAll()).thenReturn(Collections.<Venue> singletonList(venue));
+
+		mvc.perform(get("/venues/foundVenues").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("venues/index")).andExpect(handler().methodName("getAllByName"));
+
+		verify(venueService).findAllByNameContainingIgnoreCase(null);
+		verifyZeroInteractions(venue);
+	}
 			
 	@Test
 	public void getVenueFromID() throws Exception {
