@@ -69,4 +69,24 @@ public class VenuesController {
 		
 		return "venues/view";
 	}
+	
+	@RequestMapping(method = RequestMethod.PUT)
+	public Optional<Venue> findById(Long ID) {
+		return venueService.findById(ID);	
+	}
+	
+	@RequestMapping(value ="delete_venue", method = RequestMethod.GET) 
+	public String deleteVenueByID(Long ID) { 	
+		// check to find if venue with ID exists
+		if (venueService.findById(ID).isPresent()) {
+			// check if the venue has events
+			if (eventService.findAllByVenue(venueService.findById(ID).get()).isEmpty()) {
+				venueService.deleteById(ID);
+				log.error("venue " + ID + " deleted");
+			}
+		}	
+		// Go back to the current page
+		return "redirect:/venues"; 
+	}
+	
 }

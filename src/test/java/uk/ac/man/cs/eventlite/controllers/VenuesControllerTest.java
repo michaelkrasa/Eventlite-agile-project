@@ -27,7 +27,9 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.Filter;
@@ -180,7 +182,7 @@ public class VenuesControllerTest {
 		verify(venueService, VerificationModeFactory.times(2)).findById(ID);
 		verify(venueService, VerificationModeFactory.times(0)).deleteById(ID);			
 	}
-	
+	//*
 	@Test
 	public void deleteVenueWithVenueWithEvent() throws Exception {
 		// data needed for test
@@ -197,14 +199,17 @@ public class VenuesControllerTest {
 		e.setVenue(v);
 		e.setId(ID);	
 		Optional<Event> testEvent = Optional.of(e);
+		List<Event> events = Arrays.asList(new Event[]{e}); 
 		
 		// mocked methods
 		when(venueService.findById(ID)).thenReturn(testVenue);
+		when(eventService.findById(ID)).thenReturn(testEvent);
+		when(eventService.findAllByVenue(v)).thenReturn(Arrays.asList(new Event[]{e})); 
 		doNothing().when(venueService).deleteById(ID);
-	
+			
 		// assertion checks
 		assertEquals(venueService.findById(ID).get(), testVenue.get());
-		assertEquals(eventService.findById(ID).get(), testEvent.get());	
+		assertEquals(eventService.findAllByVenue(v), events);	
 			
 		// performing functions being tested
 		mvc.perform(get("/venues/delete_venue?ID=" + ID)
@@ -214,10 +219,10 @@ public class VenuesControllerTest {
 			.andExpect(handler().methodName("deleteVenueByID"));
 		
 		// verifying 
-		verify(eventService, VerificationModeFactory.times(1)).findById(ID);
+		verify(eventService, VerificationModeFactory.times(2)).findAllByVenue(v);
 		verify(venueService, VerificationModeFactory.times(3)).findById(ID);
-		verify(venueService, VerificationModeFactory.times(1)).deleteById(ID);				
-	}
+		verify(venueService, VerificationModeFactory.times(0)).deleteById(ID);				
+	} //*/
 	
 	@Test
 	public void deleteVenueWithVenueWithNoEvent() throws Exception {
@@ -228,16 +233,17 @@ public class VenuesControllerTest {
 		long ID = (long)1;
 		v.setId(ID);	
 		Optional<Venue> testVenue = Optional.of(v);	
-		Optional<Event> testEvent = Optional.empty();
+		List<Event> events = Collections.emptyList();
 		
 		// mocked methods
 		when(venueService.findById(ID)).thenReturn(testVenue);
 		doNothing().when(venueService).deleteById(ID);
+		when(eventService.findAllByVenue(v)).thenReturn(Collections.emptyList()); 
 	
 		// assertion checks	
 		assertEquals(venueService.findById(ID).get(), testVenue.get());
-		assertFalse(eventService.findById(ID).isPresent());
-			
+		assertEquals(eventService.findAllByVenue(v), events);
+		
 		// performing functions being tested
 		mvc.perform(get("/venues/delete_venue?ID=" + ID)
 			.accept(MediaType.TEXT_HTML))
@@ -246,9 +252,9 @@ public class VenuesControllerTest {
 			.andExpect(handler().methodName("deleteVenueByID"));
 		
 		// verifying 
-		verify(eventService, VerificationModeFactory.times(1)).findById(ID);
+		verify(eventService, VerificationModeFactory.times(2)).findAllByVenue(v);
 		verify(venueService, VerificationModeFactory.times(3)).findById(ID);
-		verify(venueService, VerificationModeFactory.times(0)).deleteById(ID);
+		verify(venueService, VerificationModeFactory.times(1)).deleteById(ID);
 	}
 	
 	
