@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
 @Service
@@ -42,9 +43,13 @@ public class VenueServiceImpl implements VenueService {
 	}
 
 	@Override
-	public Optional<Venue> findById(Long venueId) {
-		return venueRepository.findById(venueId);
+	public Optional<Venue> findById(Long Id) {
+		return venueRepository.findById(Id);
 	}
-
+	
+	@Override 
+	public void deleteById(Long ID) {
+		venueRepository.deleteById(ID);
+	} 
 
 }
