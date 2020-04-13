@@ -10,10 +10,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
 @Service
@@ -34,6 +36,11 @@ public class VenueServiceImpl implements VenueService {
 	@Override
 	public Iterable<Venue> findAll() {
 		return venueRepository.findAll();
+	}
+	
+	@Override
+	public Iterable<Venue> findAllByNameContainingIgnoreCase(String name){
+		return venueRepository.findAllByNameContainingIgnoreCase(name, Sort.by("name"));
 	}
 	
 	@Override
