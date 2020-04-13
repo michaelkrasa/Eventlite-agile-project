@@ -97,6 +97,64 @@ public class VenuesControllerTest {
 		mvc = MockMvcBuilders.standaloneSetup(venuesController).apply(springSecurity(springSecurityFilterChain))
 				.build();
 	}
+
+	@Test
+	public void getIndexWhenNoVenues() throws Exception {
+		when(eventService.findAll()).thenReturn(Collections.<Event> emptyList());
+		when(venueService.findAll()).thenReturn(Collections.<Venue> emptyList());
+
+		mvc.perform(get("/venues").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("venues/index")).andExpect(handler().methodName("getAllVenues"));
+
+		verify(venueService).findAll();
+		verifyZeroInteractions(event);
+		verifyZeroInteractions(venue);
+	}
+
+	@Test
+	public void getIndexWithVenues() throws Exception {
+		
+		when(venueService.findAll()).thenReturn(Collections.<Venue> singletonList(venue));
+
+		mvc.perform(get("/venues").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("venues/index")).andExpect(handler().methodName("getAllVenues"));
+
+		verify(venueService).findAll();
+		verifyZeroInteractions(event);
+		verifyZeroInteractions(venue);
+	}
+			
+	@Test
+	public void getVenueFromID() throws Exception {
+		
+		venue.setId(100L);
+		
+		// optional event
+		Optional<Venue> optV = Optional.of(venue);
+		
+		// mock method
+		when(venueService.findById(100L)).thenReturn(optV);
+				
+		
+		// call the correct mvc function
+		mvc.perform(get("/venues/100").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+		.andExpect(view().name("venues/view")).andExpect(handler().methodName("getVenueById"));
+		
+		
+		// check that method is called correctly, 2 times. one for assertequals, one for mvc.perform
+		verify(venueService).findById(100L);
+	}
+	
+	@Test
+	public void getNullEventFromID() throws Exception {
+		when(venueService.findById(0L)).thenReturn(Optional.empty());
+		
+		// routes to index as event 0 doesnt exist
+		mvc.perform(get("/venues/0").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
+				.andExpect(view().name("venues/index")).andExpect(handler().methodName("getVenueById"));
+		
+		verify(venueService).findById(0L);
+	}
 	
 	@Test
 	public void deleteVenueWhileNoVenue() throws Exception {	
@@ -192,5 +250,7 @@ public class VenuesControllerTest {
 		verify(venueService, VerificationModeFactory.times(3)).findById(ID);
 		verify(venueService, VerificationModeFactory.times(0)).deleteById(ID);
 	}
-		
+	
+	
 }
+
