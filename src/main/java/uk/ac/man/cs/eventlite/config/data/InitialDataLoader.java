@@ -57,6 +57,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			testEvent.setDate(LocalDate.of(2020,05,11));
 			testEvent.setTime(LocalTime.of(15,00));
 			testEvent.setVenue(testVenue2);
+			testEvent.setDescription("Showcase of team project for group G");
 			eventService.save(testEvent);
 			log.info("Added event (" + testEvent.getId() + ") to the database.");
 			
@@ -73,6 +74,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			testEvent3.setDate(LocalDate.of(2020,05,07));
 			testEvent3.setTime(LocalTime.of(11,00));
 			testEvent3.setVenue(testVenue2);
+			testEvent3.setDescription("Showcase of team project for group F");
 			eventService.save(testEvent3);
 			log.info("Added event (" + testEvent3.getId() + ") to the database.");
 			
@@ -81,6 +83,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			testEvent4.setDate(LocalDate.of(2020,05,07));
 			testEvent4.setTime(LocalTime.of(10,00));
 			testEvent4.setVenue(testVenue);
+			testEvent4.setDescription("");
 			eventService.save(testEvent4);
 			log.info("Added event (" + testEvent4.getId() + ") to the database.");
 			
@@ -88,7 +91,8 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			testEvent5.setName("COMP23412 Showcase, group Past");
 			testEvent5.setDate(LocalDate.of(2018,05,07));
 			testEvent5.setTime(LocalTime.of(14,00));
-			testEvent5.setVenue(testVenue);
+			testEvent5.setVenue(testVenue2);
+			testEvent5.setDescription("Showcase of team project for a past event");
 			eventService.save(testEvent5);
 			log.info("Added event (" + testEvent5.getId() + ") to the database.");
 			
@@ -98,13 +102,14 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			testEvent6.setTime(LocalTime.of(10,00));
 			testEvent6.setVenue(testVenue);
 			eventService.save(testEvent6);
+			testEvent6.setDescription("Showcase of team project for another past event");
 			log.info("Added event (" + testEvent6.getId() + ") to the database.");
 			
 			Event testEvent7 = new Event();
 			testEvent7.setName("COMP23412 Showcase, group Beta 3");
 			testEvent7.setDate(LocalDate.of(2018,03,07));
 			testEvent7.setTime(LocalTime.of(20,30));
-			testEvent7.setVenue(testVenue);
+			testEvent7.setVenue(testVenue2);
 			eventService.save(testEvent7);
 			log.info("Added event (" + testEvent7.getId() + ") to the database.");
 			
