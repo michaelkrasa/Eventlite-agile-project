@@ -54,6 +54,16 @@
       </div>
 	  </td></tr>
 	  
+	  <tr>
+      <td><label for="description">Event Description</label></td>
+      <td>
+	  <!-- DESCRIPTION -->
+      <div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+        <textarea class="form-control" name="description" id="description" rows="5" cols="50" th:text="${eventToUpdate.description}"></textarea>
+        <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">errors</p>
+      </div>
+      </td></tr>
+	  
 	  </table>
 	     
 	  <button class="btn btn-primary" type="submit"><i class="fas fa-bookmark" aria-hidden="true"></i> Save</button>
