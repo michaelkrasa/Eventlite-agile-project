@@ -260,14 +260,16 @@ public class EventsControllerTest {
 //		
 //		MultiValueMap<String, String> params = new LinkedMultiValueMap<String,String>();
 //		params.add("name", "Test event");
-//		params.add("date", "2020-04-04");
+//		params.add("date", "2100-04-04");
 //		params.add("time", "12:00");
 //		params.add("venue", "1");
 //
 //		mvc.perform(MockMvcRequestBuilders.post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
 //				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-//				.params(params).accept(MediaType.TEXT_HTML).with(csrf()))
-//		.andExpect(status().isFound()).andExpect(content().string(""))
+//				.params(params)
+//				.accept(MediaType.TEXT_HTML)
+//				.with(csrf()))
+//		.andExpect(status().is2xxSuccessful()).andExpect(content().string(""))
 //		.andExpect(view().name("redirect:/events")).andExpect(model().hasNoErrors())
 //		.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeExists("ok_message"));
 //
@@ -278,61 +280,64 @@ public class EventsControllerTest {
 //		assertThat("1", equalTo(arg.getValue().getVenue()));
 //	}
 
-//	@Test
-//	public void postBadEvent() throws Exception {
-//		MultiValueMap<String, String> params = new LinkedMultiValueMap<String,String>();
-//		params.add("name", "Test event");
-//		params.add("date", "202004-04"); // This field is incorrect format purposefully 
-//		params.add("time", "12:00");
-//		params.add("venue", "1");
-//		
-//		mvc.perform(MockMvcRequestBuilders.post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
-//				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-//				.params(params).accept(MediaType.TEXT_HTML).with(csrf()))
-//		.andExpect(status().isOk())
-//		.andExpect(view().name("events/new"))
-//		.andExpect(model().attributeHasFieldErrors("events", "date"))
-//		.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeCount(0));
-//
-//		verify(eventService, never()).save(event);
-//	}
+	@Test
+	public void postBadEvent() throws Exception {
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<String,String>();
+		params.add("name", "Test event");
+		params.add("date", "22-10-22222"); // This field is incorrect format purposefully 
+		params.add("time", "12:00");
+		params.add("venue", "1");
+		
+		mvc.perform(MockMvcRequestBuilders.post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.params(params).accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isOk())
+		.andExpect(view().name("events/new"))
+		.andExpect(model().attributeHasFieldErrors("event", "date"))
+		.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeCount(0));
 
-//	@Test
-//	public void postLongEventName() throws Exception {
-//		MultiValueMap<String, String> params = new LinkedMultiValueMap<String,String>();
-//		params.add("name", "Test event test event test event test event test event test event "
-//				+ "test event test event test event test event test event test event");
-//		params.add("date", "2020-04-04");
-//		params.add("time", "12:00");
-//		params.add("venue", "1");
-//		
-//		mvc.perform(MockMvcRequestBuilders.post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
-//				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-//				.params(params).accept(MediaType.TEXT_HTML).with(csrf()))
-//		.andExpect(status().isOk()).andExpect(view().name("events/new"))
-//		.andExpect(model().attributeHasFieldErrors("event", "name"))
-//		.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeCount(0));
-//
-//		verify(eventService, never()).save(event);
-//	}
+		verify(eventService, never()).save(event);
+	}
 
-//	@Test
-//	public void postEmptyEvent() throws Exception {
-//		MultiValueMap<String, String> params = new LinkedMultiValueMap<String,String>();
-//		params.add("name", "");
-//		params.add("date", "2020-04-04");
-//		params.add("time", "12:00");
-//		params.add("venue", "1");
-//		
-//		mvc.perform(MockMvcRequestBuilders.post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
-//				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
-//				.params(params).accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
-//		.andExpect(view().name("events/new"))
-//		.andExpect(model().attributeHasFieldErrors("event", "name"))
-//		.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeCount(0));
-//
-//		verify(eventService, never()).save(event);
-//	}
+	@Test
+	public void postLongEventName() throws Exception {
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<String,String>();
+		params.add("name", "Test event test event test event test event test event test event "
+				+ "test event test event test event test event test event test event"
+				+ "test event test event test event test event test event test event"
+				+ "test event test event test event test event test event test event");
+		params.add("date", "2020-04-04");
+		params.add("time", "12:00");
+		params.add("venue", "1");
+		
+		mvc.perform(MockMvcRequestBuilders.post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.params(params).accept(MediaType.TEXT_HTML).with(csrf()))
+		.andExpect(status().isOk()).andExpect(view().name("events/new"))
+		.andExpect(model().attributeHasFieldErrors("event", "name"))
+		.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeCount(0));
+
+		verify(eventService, never()).save(event);
+	}
+
+	@Test
+	public void postEmptyEvent() throws Exception {
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<String,String>();
+		params.add("name", "");
+		params.add("date", "2020-04-04");
+		params.add("time", "12:00");
+		params.add("venue", "1");
+		
+		mvc.perform(MockMvcRequestBuilders.post("/events").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.params(params).accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
+		.andExpect(view().name("events/new"))
+		.andExpect(model().attributeHasFieldErrors("event", "name"))
+		.andExpect(handler().methodName("createEvent")).andExpect(flash().attributeCount(0));
+
+		verify(eventService, never()).save(event);
+	}
+	
 	@Test
 	public void deleteEventWithEvent() throws Exception { 
 		// data needed for test

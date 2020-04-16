@@ -39,6 +39,13 @@
         <input class="form-control" type="time" name="time" id="time" placeholder="Event time" autofocus="autofocus" />
         <p class="text-danger" th:if="${#fields.hasErrors('time')}" th:errors="*{time}">errors</p>
       </div>
+      
+      <!-- DESCRIPTION -->
+      <div class="form-group" th:classappend="${#fields.hasErrors('description')}? has-error">
+        <label for="description">Event Description</label>
+        <textarea class="form-control" name="description" id="description" placeholder="Event description" rows="5" cols="50"></textarea>
+        <p class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">errors</p>
+      </div>
      
       <button class="btn btn-primary" type="submit"><i class="fas fa-bookmark" aria-hidden="true"></i> Save</button>
       <a class="btn btn-warning" role="button" href="/events"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
