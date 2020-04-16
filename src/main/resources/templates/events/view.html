@@ -12,7 +12,7 @@
 			<h1><p th:text="${event.name}">Name</p></h1>
 			
 			<h2>Venue</h2>
-			<p th:text="${event.venue.name}">Venue</p>
+			<p><a th:href="@{'/venues/' + ${event.venue.id}}" th:text="${event.venue.name}">Venue</a></p>
 			
 			<h2>Event date</h2>
 			<p th:text="${#temporals.format(event.date, 'dd LLLL yyyy')}">Date</p>

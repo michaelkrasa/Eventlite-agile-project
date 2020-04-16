@@ -35,7 +35,7 @@
 	      </thead>
 	      <tbody>
 	      	<tr th:each="e : ${future_events}">
-	        	<td>
+	          <td>
 	          
 	          	<a th:href="@{'/events/' + ${e.id}}" th:text="${e.name}">
 	          	My Event
@@ -44,7 +44,13 @@
 	          </td>
 	          <td th:text="${{e.date}}">Event date</td>
 	          <td th:text="${{e.time}}">Event time</td>
-	          <td th:text="${e.venue.name}">Event venue</td>
+	          <td>
+	          
+	          	<a th:href="@{'/venues/' + ${e.venue.id}}" th:text="${e.venue.name}">
+	          	My Event
+	            </a>
+	          
+	          </td>
 	        </tr>
 	      </tbody>
 	    </table>
@@ -71,7 +77,13 @@
 	          </td>
 	          <td th:text="${{e.date}}">Event date</td>
 	          <td th:text="${{e.time}}">Event time</td>
-	          <td th:text="${e.venue.name}">Event venue</td>          	          	
+	          <td>
+	          
+	          	<a th:href="@{'/venues/' + ${e.venue.id}}" th:text="${e.venue.name}">
+	          	My Event
+	            </a>
+	          
+	          </td>     	          	
 	        </tr>
 	      </tbody>
 	    </table>
@@ -101,7 +113,13 @@
 	          </td>
 	          <td th:text="${{e.date}}">Event date</td>
 	          <td th:text="${{e.time}}">Event time</td>
-	          <td th:text="${e.venue.name}">Event venue</td>
+	          <td>
+	          
+	          	<a th:href="@{'/venues/' + ${e.venue.id}}" th:text="${e.venue.name}">
+	          	My Event
+	            </a>
+	          
+	          </td>
 	        </tr>
 	      </tbody>
 	    </table>
@@ -128,7 +146,13 @@
 	          </td>
 	          <td th:text="${{e.date}}">Event date</td>
 	          <td th:text="${{e.time}}">Event time</td>
-	          <td th:text="${e.venue.name}">Event venue</td>
+	          <td>
+	          
+	          	<a th:href="@{'/venues/' + ${e.venue.id}}" th:text="${e.venue.name}">
+	          	My Event
+	            </a>
+	          
+	          </td>
 	        </tr>
 	      </tbody>
 	    </table>
