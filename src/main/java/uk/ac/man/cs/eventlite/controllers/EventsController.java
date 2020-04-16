@@ -46,7 +46,7 @@ import uk.ac.man.cs.eventlite.entities.Event;
 public class EventsController {
 
 	private final static Logger log = LoggerFactory.getLogger(EventsController.class);
-	private long idOfUpdatedEvent = 0;
+	private long idOfEventToUpdate = 0;
 	
 	@Autowired
 	private EventService eventService;
@@ -147,8 +147,47 @@ public class EventsController {
 		// Go back to /events
 		return "redirect:/events";
 	}
-
-
+	
+	/////////////////////////// UPDATE EVENT ////////////////////////////////////////////////////
+	@RequestMapping(value="/update", method = RequestMethod.GET)
+	public String updateEvent(Model model, @RequestParam String id) {
+		log.info("Update method called");
+		log.info("id: " + id);
+		
+		idOfEventToUpdate = Long.parseLong(id);
+		
+		Optional<Event> event = eventService.findById(idOfEventToUpdate);
+		if (event.isPresent()) {
+			model.addAttribute("event", event.get());
+		}
+		
+		model.addAttribute("venues", venueService.findAll());
+		
+		return "events/update";
+	}
+	
+	@RequestMapping(value="/update", method=RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public String saveUpdatedEvent(@RequestBody @Valid @ModelAttribute Event event, 
+			BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
+		
+		System.out.println("-------------------");
+		System.out.println(errors);
+		
+		// If form has errors, stay on event/update (stay on form)
+		if (errors.hasErrors()) {
+			model.addAttribute("event", event);
+			model.addAttribute("venues", venueService.findAll()); // Reload venues 
+			return "events/update";
+		}
+		
+		eventService.deleteById(idOfEventToUpdate); // Delete old event
+		
+		eventService.save(event); // Save new event
+		redirectAttrs.addFlashAttribute("ok_message", "Event updated.");
+		
+		return "redirect:/events"; // Go back to /events
+	}
+	
 	@RequestMapping(value = "/foundEvents", method = RequestMethod.GET)
 	public String getAllByName(@RequestParam (value = "search", required = false) String name, Model model) {
 		
@@ -169,31 +208,5 @@ public class EventsController {
 		model.addAttribute("search_past", pastEvents);
 		
 		return "events/index";
-	}
-	
-	@RequestMapping(value="/update", method = RequestMethod.GET)
-	public String updateEvent(Model model, @RequestParam String id) {
-		log.info("Update method called");
-		log.info("id: " + id);
-		
-		idOfUpdatedEvent = Long.parseLong(id);
-		
-		Optional<Event> event = eventService.findById(idOfUpdatedEvent);
-		if (event.isPresent()) {
-			model.addAttribute("eventToUpdate", event.get());
-		}
-		
-		model.addAttribute("venues", venueService.findAll());
-		
-		return "events/update";
-	}
-	
-	@RequestMapping(value="/update", method=RequestMethod.POST)
-	public String saveUpdatedEvent(@ModelAttribute("updatedEvent") Event eventToUpdate, BindingResult errors, Model model) {
-		eventService.deleteById(idOfUpdatedEvent); // Delete old event
-		
-		eventService.save(eventToUpdate); // Save new event
-		
-		return "redirect:/events"; // Go back to /events
 	}
 }
