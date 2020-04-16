@@ -3,6 +3,7 @@ package uk.ac.man.cs.eventlite.controllers;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,9 +65,11 @@ public class VenuesController {
 		
 		
 		List<Event> events = eventService.findAllByVenue(venue.get());
-		for(Event e: events) {
+		Iterator<Event> iterator = events.iterator();
+		while(iterator.hasNext()) {
+			Event e = iterator.next();
 			if(e.getDate().compareTo(LocalDate.now())<0) {
-				events.remove(e); // remove events before today
+				iterator.remove(); // remove events before today
 			}
 			else
 				break;	// in order last to first, as soon as one is after today, no more need to be removed
