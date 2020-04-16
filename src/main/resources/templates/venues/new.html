@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/default}">
+<head>
+  <title>New</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <h1>Add a new venue</h1> 
+
+    <form action="#" th:action="@{/venues}" th:object="${venue}" method="post">
+    
+      <!-- NAME -->
+      <div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+        <label for="name">Venue name</label>
+        <input class="form-control" type="text" name="name" id="name" placeholder="venue name" autofocus="autofocus" />
+        <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">errors</p>
+      </div>
+      
+      <!-- ADDRESS -->
+      <div class="form-group" th:classappend="${#fields.hasErrors('address')}? has-error">
+        <label for="address">Venue address</label>
+        <input class="form-control" type="text" name="address" id="address" placeholder="venue address" autofocus="autofocus" />
+        <p class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">errors</p>
+      </div>
+      
+      <!-- CAPACITY -->
+      <div class="form-group" th:classappend="${#fields.hasErrors('capacity')}? has-error">
+        <label for="capacity">Venue capacity</label>
+        <input class="form-control" type="text" name="capacity" id="capacity" placeholder="venue capacity" autofocus="autofocus" />
+        <p class="text-danger" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}">errors</p>
+      </div>
+     
+      <button class="btn btn-primary" type="submit"><i class="fas fa-bookmark" aria-hidden="true"></i> Save</button>
+      <a class="btn btn-warning" role="button" href="/venues"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
+    </form>
+  </div>
+</body>
+</html>
