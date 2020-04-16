@@ -27,7 +27,7 @@ public class Event {
 	@GeneratedValue
 	private long id;
 	
-	@NotEmpty(message = "Date is mandatory")
+	@NotNull(message = "Date is mandatory")
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Future
@@ -41,7 +41,7 @@ public class Event {
 	@Size(max = 256)
 	private String name;
 	
-	@NotEmpty(message = "Venue is mandatory")
+	@NotNull(message = "Venue is mandatory")
 	@ManyToOne
 	@JoinColumn(name = "venueId")
 	private Venue venue;
@@ -91,4 +91,14 @@ public class Event {
 	public void setVenue(Venue ivenue) {
 		venue = ivenue;
 	}
+	
+	public String getDescription() {
+		return description;
+	}
+	
+	public void setDescription(String description) {
+		this.description = description;
+	}
 }
+
+
