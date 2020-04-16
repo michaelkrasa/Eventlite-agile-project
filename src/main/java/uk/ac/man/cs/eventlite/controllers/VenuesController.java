@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +34,8 @@ import uk.ac.man.cs.eventlite.entities.Venue;
 public class VenuesController {
 
 	private final static Logger log = LoggerFactory.getLogger(VenuesController.class);
+	
+	private long idOfUpdatedVenue = 0;
 	
 	@Autowired
 	private VenueService venueService;
@@ -104,4 +108,40 @@ public class VenuesController {
 		return "venues/index";
 	}
 
+	@RequestMapping(value="/update", method = RequestMethod.GET)
+	public String updateEvent(Model model, @RequestParam String id) {
+		log.info("Update method called");
+		log.info("id: " + id);
+		
+		// Convert the id into a long and store in the class
+		idOfUpdatedVenue = Long.parseLong(id);
+		
+		// Find the venueToUpdate and add it to model
+		Optional<Venue> venue = venueService.findById(idOfUpdatedVenue);
+		if (venue.isPresent()) {
+			model.addAttribute("venueToUpdate", venue.get());
+		}
+		// Add all the other modevenues to the model
+		model.addAttribute("venues", venueService.findAll());
+		
+		// Go to the update page
+		return "venues/update";
+	}
+	
+	@RequestMapping(value="/update", method=RequestMethod.POST)
+	public String saveUpdatedVenue(@ModelAttribute("updatedVenue") Venue venueToUpdate, BindingResult errors, Model model) {
+		
+		// Get the venue we want to update
+		Optional<Venue> venue = venueService.findById(idOfUpdatedVenue);
+		
+		// Set the values of this venue to what the user inputted
+		venue.get().setName(venueToUpdate.getName());
+		venue.get().setCapacity(venueToUpdate.getCapacity());
+		
+		// Save it
+		venueService.save(venue.get());
+		// Go back to /venues
+		return "redirect:/venues";
+	}
+	
 }

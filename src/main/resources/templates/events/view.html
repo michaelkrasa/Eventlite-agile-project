@@ -20,6 +20,11 @@
 			<h2>Event time</h2>
 			<p th:text="${event.time}">Time</p>
 			
+			<div th:style="${event.description != null and event.description != '' ? 'display:block' : 'display:none'}" >
+				<h2>Description</h2>
+				<p th:text="${event.description}">Description</p>
+			</div>
+			
 		</blockquote>
 	
 		<div>
