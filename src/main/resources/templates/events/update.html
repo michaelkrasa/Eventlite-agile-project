@@ -21,15 +21,6 @@
         <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">errors</p>
       </div>
       </td></tr>
-      
-      <tr>
-	  <td><label for="name">Description:</label></td>
-	  <td>
-	  <div class="form-group" th:classappend="${#fields.hasErrors('description')}? has-error">
-        <input class="form-control" type="text" name="description" id="description" th:value="${event.description}" autofocus="autofocus" />
-        <p class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">errors</p>
-      </div>
-      </td></tr>
 
       <tr>
       <td><label for="venue">Venue:</label>
@@ -66,10 +57,10 @@
 	  <tr>
       <td><label for="description">Event Description</label></td>
       <td>
-	  <!-- DESCRIPTION -->
-      <div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
-        <textarea class="form-control" name="description" id="description" rows="5" cols="50" th:text="${eventToUpdate.description}"></textarea>
-        <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">errors</p>
+      <!-- DESCRIPTION -->
+      <div class="form-group" th:classappend="${#fields.hasErrors('description')}? has-error">
+        <textarea class="form-control" name="description" id="description" rows="5" cols="50" th:text="${event.description}"></textarea>
+        <p class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">errors</p>
       </div>
       </td></tr>
 	  
