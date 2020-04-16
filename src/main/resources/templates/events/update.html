@@ -9,7 +9,7 @@
   <div layout:fragment="content">
     <h1>Update event</h1>
 
-	<form action="#" th:action="@{/events/update}" th:object="${eventToUpdate}" method="post" modelAttribute="updatedEvent">
+	<form action="#" th:action="@{/events/update}" th:object="${event}" method="post" modelAttribute="updatedEvent">
 		
 	  <table class="table table-striped table-hover">
 	  
@@ -17,18 +17,27 @@
 	  <td><label for="name">Name:</label></td>
 	  <td>
 	  <div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
-        <input class="form-control" type="text" name="name" id="name" th:value="${eventToUpdate.name}" autofocus="autofocus" />
+        <input class="form-control" type="text" name="name" id="name" th:value="${event.name}" autofocus="autofocus" />
         <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">errors</p>
       </div>
       </td></tr>
       
+      <tr>
+	  <td><label for="name">Description:</label></td>
+	  <td>
+	  <div class="form-group" th:classappend="${#fields.hasErrors('description')}? has-error">
+        <input class="form-control" type="text" name="description" id="description" th:value="${event.description}" autofocus="autofocus" />
+        <p class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}">errors</p>
+      </div>
+      </td></tr>
+
       <tr>
       <td><label for="venue">Venue:</label>
       </td><td>
       <!-- VENUE -->
       <div class="form-group" th:classappend="${#fields.hasErrors('venue')}? has-error">
         <select th:field="*{venue}" class="form-control" id="venue" name="venue"> 
-          <option th:each="v : ${venues}" th:value="${v.id}" th:text="${v.name}" th:selected="${v.equals(eventToUpdate.venue)}"></option>
+          <option th:each="v : ${venues}" th:value="${v.id}" th:text="${v.name}" th:selected="${v.equals(venue)}"></option>
         </select>
         <p class="text-danger" th:if="${#fields.hasErrors('venue')}" th:errors="*{venue}">errors</p>
       </div>
@@ -39,7 +48,7 @@
       <td>
       <!-- DATE-->
       <div class="form-group" th:classappend="${#fields.hasErrors('date')}? has-error">
-        <input class="form-control" type="date" name="date" id="date" th:value="${eventToUpdate.date}" autofocus="autofocus" />
+        <input class="form-control" type="date" name="date" id="date" th:value="${event.date}" autofocus="autofocus" />
         <p class="text-danger" th:if="${#fields.hasErrors('date')}" th:errors="*{date}">errors</p>
       </div>
       </td></tr>
@@ -49,7 +58,7 @@
       <td>
       <!-- TIME -->
       <div class="form-group" th:classappend="${#fields.hasErrors('time')}? has-error">
-        <input class="form-control" type="time" name="time" id="time" th:value="${eventToUpdate.time}" autofocus="autofocus" />
+        <input class="form-control" type="time" name="time" id="time" th:value="${event.time}" autofocus="autofocus" />
         <p class="text-danger" th:if="${#fields.hasErrors('time')}" th:errors="*{time}">errors</p>
       </div>
 	  </td></tr>
