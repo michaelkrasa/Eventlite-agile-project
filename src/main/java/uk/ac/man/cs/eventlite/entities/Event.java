@@ -27,7 +27,7 @@ public class Event {
 	@GeneratedValue
 	private long id;
 	
-	@NotNull(message = "Date is mandatory")
+	@NotNull(message = "Event date is required")
 	@JsonFormat(shape = JsonFormat.Shape.STRING)
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	@Future
@@ -37,11 +37,11 @@ public class Event {
 	@DateTimeFormat(pattern = "HH:mm")
 	private LocalTime time;
 	
-	@NotEmpty(message = "Name is mandatory")
+	@NotEmpty(message = "Event name is required")
 	@Size(max = 256)
 	private String name;
 	
-	@NotNull(message = "Venue is mandatory")
+	@NotNull(message = "Event venue is required")
 	@ManyToOne
 	@JoinColumn(name = "venueId")
 	private Venue venue;
