@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import javax.validation.Valid;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.NotNull;
 
@@ -15,12 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
@@ -102,6 +106,41 @@ public class VenuesController {
 		model.addAttribute("search", allVenues);
 		
 		return "venues/index";
+	}
+	
+	// GET request made by button, taking user to page "venues/new" to input event details
+	@RequestMapping(value = "/new", method = RequestMethod.GET)
+	public String newEvent(Model model) {
+		
+		if (!model.containsAttribute("venue")) {
+			model.addAttribute("venue", new Venue());
+		}
+				
+		return "venues/new";
+	}
+	
+	// POST request made when submitting form on "venues/new", to create the new event
+	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+	public String createEvent(@RequestBody @Valid @ModelAttribute Venue venue,
+			BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
+		
+		System.out.println("=============================");
+		System.out.println(venue.getPostcode());
+		System.out.println("=============================");
+
+		
+		// If form has errors, stay on venues/new (stay on form)
+		if (errors.hasErrors()) {
+			model.addAttribute("venue", venue);
+			return "venues/new";
+		}	
+		
+		// If no errors, save the venue
+		venueService.save(venue);
+		redirectAttrs.addFlashAttribute("ok_message", "New venue added.");
+		
+		// Go back to /venues
+		return "redirect:/venues";
 	}
 
 }

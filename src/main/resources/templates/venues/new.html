@@ -17,11 +17,18 @@
         <p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">errors</p>
       </div>
       
-      <!-- ADDRESS -->
-      <div class="form-group" th:classappend="${#fields.hasErrors('address')}? has-error">
-        <label for="address">Venue address</label>
-        <input class="form-control" type="text" name="address" id="address" placeholder="venue address" autofocus="autofocus" />
-        <p class="text-danger" th:if="${#fields.hasErrors('address')}" th:errors="*{address}">errors</p>
+      <!-- STREET ADDRESS -->
+      <div class="form-group" th:classappend="${#fields.hasErrors('streetAddress')}? has-error">
+        <label for="streetAddress">Venue street address</label>
+        <input class="form-control" type="text" name="streetAddress" id="streetAddress" placeholder="venue street address" autofocus="autofocus" />
+        <p class="text-danger" th:if="${#fields.hasErrors('streetAddress')}" th:errors="*{streetAddress}">errors</p>
+      </div>
+      
+      <!-- POSTCODE -->
+      <div class="form-group" th:classappend="${#fields.hasErrors('postcode')}? has-error">
+        <label for="postcode">Venue postcode</label>
+        <input class="form-control" type="text" name="postcode" id="postcode" placeholder="venue postcode" autofocus="autofocus" />
+        <p class="text-danger" th:if="${#fields.hasErrors('postcode')}" th:errors="*{postcode}">errors</p>
       </div>
       
       <!-- CAPACITY -->
