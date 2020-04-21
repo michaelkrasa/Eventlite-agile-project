@@ -396,4 +396,52 @@ public class EventsControllerTest {
 		verify(eventService, VerificationModeFactory.times(0)).deleteById(ID);	
 	}
 	
+	@Test
+	public void updateEventWhereEventExists() throws Exception {
+		
+		Event e = new Event();
+		e.setName("testEvent");
+		e.setTime(null);
+		e.setDate(null);
+		e.setVenue(null);
+		long ID = (long)1;
+		e.setId(ID);	
+		Optional<Event> testEvent = Optional.of(e);
+		
+		when(eventService.findById(ID)).thenReturn(testEvent);
+		when(venueService.findAll()).thenReturn(Collections.<Venue> emptyList());
+		
+		mvc.perform(get("/events/update?id=" + ID)
+				.accept(MediaType.TEXT_HTML))
+				.andExpect(status().isOk())
+				.andExpect(view().name("events/update"))
+				.andExpect(model().attributeExists("event"))
+				.andExpect(model().attributeExists("venues"))
+				.andExpect(handler().methodName("updateEvent"));
+		
+		verify(eventService, VerificationModeFactory.times(1)).findById(ID);
+		verify(venueService, VerificationModeFactory.times(1)).findAll();
+		
+	}
+	
+	@Test
+	public void updateEventWhereNoEvent() throws Exception {
+		long ID = (long)1;
+		Optional<Event> testEvent = Optional.empty();
+		
+		when(eventService.findById(ID)).thenReturn(testEvent);
+		when(venueService.findAll()).thenReturn(Collections.<Venue> emptyList());
+		
+		mvc.perform(get("/events/update?id=" + ID)
+				.accept(MediaType.TEXT_HTML))
+				.andExpect(status().isOk())
+				.andExpect(view().name("events/update"))
+				.andExpect(model().attributeDoesNotExist("event"))
+				.andExpect(model().attributeExists("venues"))
+				.andExpect(handler().methodName("updateEvent"));
+		
+		verify(eventService, VerificationModeFactory.times(1)).findById(ID);
+		verify(venueService, VerificationModeFactory.times(1)).findAll();
+	}
+	
 }
