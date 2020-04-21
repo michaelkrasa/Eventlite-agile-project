@@ -112,7 +112,7 @@ public class VenuesController {
 	}
 
 	@RequestMapping(value="/update", method = RequestMethod.GET)
-	public String updateEvent(Model model, @RequestParam String id) {
+	public String updateVenue(Model model, @RequestParam String id) {
 		log.info("Update method called");
 		log.info("id: " + id);
 		
