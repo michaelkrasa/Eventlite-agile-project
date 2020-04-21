@@ -281,6 +281,50 @@ public class VenuesControllerTest {
 		verify(venueService, VerificationModeFactory.times(1)).deleteById(ID);
 	}
 	
+	@Test
+	public void updateVenueWhereVenueExists() throws Exception {
+		
+		Venue v = new Venue();
+		v.setName("testVenue");
+		v.setCapacity(80);
+		long ID = (long)1;
+		v.setId(ID);	
+		Optional<Venue> testVenue = Optional.of(v);	
+		
+		when(venueService.findById(ID)).thenReturn(testVenue);
+		when(venueService.findAll()).thenReturn(Collections.<Venue> emptyList());
+		
+		mvc.perform(get("/venues/update?id=" + ID)
+				.accept(MediaType.TEXT_HTML))
+				.andExpect(status().isOk())
+				.andExpect(view().name("venues/update"))
+				.andExpect(model().attributeExists("venueToUpdate"))
+				.andExpect(model().attributeExists("venues"))
+				.andExpect(handler().methodName("updateVenue"));
+		
+		verify(venueService, VerificationModeFactory.times(1)).findById(ID);
+		verify(venueService, VerificationModeFactory.times(1)).findAll();
+		
+	}
 	
+	@Test
+	public void updateVenueWhereNoVenue() throws Exception {
+		long ID = (long)1;
+		Optional<Venue> testVenue = Optional.empty();
+		
+		when(venueService.findById(ID)).thenReturn(testVenue);
+		when(venueService.findAll()).thenReturn(Collections.<Venue> emptyList());
+		
+		mvc.perform(get("/venues/update?id=" + ID)
+				.accept(MediaType.TEXT_HTML))
+				.andExpect(status().isOk())
+				.andExpect(view().name("venues/update"))
+				.andExpect(model().attributeDoesNotExist("venueToUpdate"))
+				.andExpect(model().attributeExists("venues"))
+				.andExpect(handler().methodName("updateVenue"));
+		
+		verify(venueService, VerificationModeFactory.times(1)).findById(ID);
+		verify(venueService, VerificationModeFactory.times(1)).findAll();
+	}
 }
 
