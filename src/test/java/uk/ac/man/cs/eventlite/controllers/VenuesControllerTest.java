@@ -326,5 +326,28 @@ public class VenuesControllerTest {
 		verify(venueService, VerificationModeFactory.times(1)).findById(ID);
 		verify(venueService, VerificationModeFactory.times(1)).findAll();
 	}
+	
+	// test that adding a Venue's location with a string, converts that into a coordinate to be stored.
+	@Test
+	public void mapboxAddLocation() {
+		Venue testVenue = new Venue();
+		
+		// double defaults at 0
+		assertTrue(testVenue.getLatitude() == 0 && testVenue.getLongitude() == 0);
+		
+		// update location
+		testVenue.setLocation("Kilburn Building");
+		
+		// wait 1 sec for asynchronous response
+		try {
+			Thread.sleep(1000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		// 53.467524, -2.233915 are the lat, long of Kilburn ( results of the first call of this and verified in google maps)
+		assertTrue(testVenue.getLatitude() == 53.467524 && testVenue.getLongitude() == -2.233915);	
+	}
 }
 
