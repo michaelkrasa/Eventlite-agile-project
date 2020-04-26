@@ -40,6 +40,8 @@ public class Venue {
 
 	private int capacity;
 	
+	private String locationString; // used to check if its been updated to avoid unnecesary api Calls
+	
 	private double latitude;
 	
 	private double longitude;
@@ -74,10 +76,10 @@ public class Venue {
 		this.capacity = capacity;
 	}
 	
-	public void setLocation(String locationString) {
+	public void setLocation(String inputLocationString) {
 		MapboxGeocoding locationQuery = MapboxGeocoding.builder()
 			.accessToken("pk.eyJ1IjoiajMzMDM2YWoiLCJhIjoiY2s4eGhsMjdoMDk0dzNscDVidXd0OGc3dyJ9.wDg8cWDqltVSBrXxf8R9mg")
-			.query(locationString)
+			.query(inputLocationString)
 			.build();
 		
 		locationQuery.enqueueCall(new Callback<GeocodingResponse>() {
@@ -94,6 +96,7 @@ public class Venue {
 				  
 				  latitude = location.latitude();
 				  longitude = location.longitude();
+				  locationString = inputLocationString;
 				  
 				  log.info("[Geocode request] : lat,long : " + latitude + ", " + longitude);
 		 
@@ -110,6 +113,14 @@ public class Venue {
 				throwable.printStackTrace();
 			}
 		});
+		
+		// wait 1 sec for asynchronous response
+		try {
+			Thread.sleep(1000L);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	}
 
@@ -121,4 +132,13 @@ public class Venue {
 		return longitude;
 	}
 	
+	public String getLocationString() {
+		return locationString;
+	}
+	
+	public void setLocationString(String locationString) {
+		this.locationString = locationString;
+	}
+	
 }
+

@@ -338,16 +338,9 @@ public class VenuesControllerTest {
 		// update location
 		testVenue.setLocation("Kilburn Building");
 		
-		// wait 1 sec for asynchronous response
-		try {
-			Thread.sleep(1000L);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
 		// 53.467524, -2.233915 are the lat, long of Kilburn ( results of the first call of this and verified in google maps)
-		assertTrue(testVenue.getLatitude() == 53.467524 && testVenue.getLongitude() == -2.233915);	
+		assertTrue(testVenue.getLatitude() == 53.467524 && testVenue.getLongitude() == -2.233915);
+		assertTrue(testVenue.getLocationString().contentEquals("Kilburn Building"));
 	}
 }
 
