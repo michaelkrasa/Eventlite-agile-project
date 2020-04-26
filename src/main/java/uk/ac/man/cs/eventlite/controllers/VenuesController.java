@@ -137,6 +137,13 @@ public class VenuesController {
 		// Get the venue we want to update
 		Optional<Venue> venue = venueService.findById(idOfUpdatedVenue);
 		
+		// this avoids unnecessarily calling the api
+		if(!venueToUpdate.getLocationString().equals(venue.get().getLocationString())) {
+			venue.get().setLocation(venueToUpdate.getLocationString());
+			log.info("Venue lat and long updated");
+		}
+		
+		
 		// Set the values of this venue to what the user inputted
 		venue.get().setName(venueToUpdate.getName());
 		venue.get().setCapacity(venueToUpdate.getCapacity());
