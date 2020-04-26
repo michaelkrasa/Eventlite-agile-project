@@ -17,6 +17,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -124,8 +126,7 @@ public class VenuesController {
 		if (venue.isPresent()) {
 			model.addAttribute("venueToUpdate", venue.get());
 		}
-		// Add all the other modevenues to the model
-		model.addAttribute("venues", venueService.findAll());
+
 		
 		// Go to the update page
 		return "venues/update";
@@ -133,6 +134,9 @@ public class VenuesController {
 	
 	@RequestMapping(value="/update", method=RequestMethod.POST)
 	public String saveUpdatedVenue(@ModelAttribute("updatedVenue") Venue venueToUpdate, BindingResult errors, Model model) {
+		
+		// If form has errors, stay on event/new (stay on form)
+		
 		
 		// Get the venue we want to update
 		Optional<Venue> venue = venueService.findById(idOfUpdatedVenue);
@@ -147,8 +151,20 @@ public class VenuesController {
 			venue.get().updateLocation();
 			
 			log.info("Location updated to: " + venue.get().getLocationString());
+			log.info("Lat, Long updated to: " + venue.get().getLatitude() + ", " + venue.get().getLongitude());
+			
+			if(venue.get().getLongitude() == 0 && venue.get().getLatitude() == 0) {
+				model.addAttribute("locationError", "Location is invalid");
+				model.addAttribute("venueToUpdate", venueToUpdate);
+				return "venues/update";
+			}
 		}
 		
+		if (errors.hasErrors()) { 
+			model.addAllAttributes(errors.getModel());
+			model.addAttribute("venueToUpdate", venueToUpdate);
+			return "venues/update";
+		}
 		
 		
 		// Set the values of this venue to what the user inputted

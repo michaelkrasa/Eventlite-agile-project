@@ -24,12 +24,35 @@
 			</tr>
 			
 			<tr>
-				<td><label for="locationString">Location Address:</label></td>
+				<td><label >Location Address:</label></td>
 				<td>
-					<div class="form-group" th:classappend="${#fields.hasErrors('locationString')}? has-error">
-					<input class="form-control" type="text" name="locationString" id="locationString" th:value="${venueToUpdate.locationString}" autofocus="autofocus" />
-					<p class="text-danger" th:if="${#fields.hasErrors('locationString')}" th:errors="*{locationString}">errors</p>
+					<p class="text-danger" th:if="${locationError}"> The entered address was invalid, try again</p>
+					
+					<label for="address1">Address line 1</label>
+					<div class="form-group" th:classappend="${#fields.hasErrors('address1')}? has-error">
+					<input class="form-control" type="text" name="address1" id="address1" th:value="${venueToUpdate.address1}" autofocus="autofocus" />
+					<p class="text-danger" th:if="${#fields.hasErrors('address1')}" th:errors="*{address1}">errors</p>
 					</div>
+					
+					<label for="address2">Address line 2</label>
+					<div class="form-group" th:classappend="${#fields.hasErrors('address2')}? has-error">
+					<input class="form-control" type="text" name="address2" id="address2" th:value="${venueToUpdate.address2}" autofocus="autofocus" />
+					<p class="text-danger" th:if="${#fields.hasErrors('address2')}" th:errors="*{address2}">errors</p>
+					</div>
+					
+					<label for="city">City</label>
+					<div class="form-group" th:classappend="${#fields.hasErrors('city')}? has-error">
+					<input class="form-control" type="text" name="city" id="city" th:value="${venueToUpdate.city}" autofocus="autofocus" />
+					<p class="text-danger" th:if="${#fields.hasErrors('city')}" th:errors="*{city}">errors</p>
+					</div>
+					
+					<label for="postcode">Post code</label>
+					<div class="form-group" th:classappend="${#fields.hasErrors('postcode')}? has-error">
+					<input class="form-control" type="text" name="postcode" id="postcode" th:value="${venueToUpdate.postcode}" autofocus="autofocus" />
+					<p class="text-danger" th:if="${#fields.hasErrors('postcode')}" th:errors="*{postcode}">errors</p>
+					<span class="help-block" th:if="${#fields.hasErrors('postcode')}" th:errors="*{postcode}"></span>
+					</div>
+					
 				</td>
 			</tr>  
 	      
