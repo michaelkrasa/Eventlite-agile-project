@@ -336,11 +336,13 @@ public class VenuesControllerTest {
 		assertTrue(testVenue.getLatitude() == 0 && testVenue.getLongitude() == 0);
 		
 		// update location
-		testVenue.setLocation("Kilburn Building");
+		testVenue.setAddress1("Kilburn Building");
+		testVenue.setCity("Manchester");
+		testVenue.updateLocation();
 		
 		// 53.467524, -2.233915 are the lat, long of Kilburn ( results of the first call of this and verified in google maps)
 		assertTrue(testVenue.getLatitude() == 53.467524 && testVenue.getLongitude() == -2.233915);
-		assertTrue(testVenue.getLocationString().contentEquals("Kilburn Building"));
+		assertTrue(testVenue.getLocationString().contentEquals("Kilburn Building Manchester"));
 	}
 }
 
