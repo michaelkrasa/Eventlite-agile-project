@@ -2,7 +2,7 @@ package uk.ac.man.cs.eventlite.entities;
 
 
 import java.util.List;
-import java.util.function.BooleanSupplier;
+
 
 //import java.util.Set;
 
@@ -23,7 +23,6 @@ import com.mapbox.geojson.Point;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import uk.ac.man.cs.eventlite.config.data.InitialDataLoader;
 
 
 @Entity
@@ -39,6 +38,11 @@ public class Venue {
 	private String name;
 
 	private int capacity;
+	
+	private String address1 = "";
+	private String address2 = "";
+	private String city;
+	private String postcode ;
 	
 	private String locationString; // used to check if its been updated to avoid unnecesary api Calls
 	
@@ -76,10 +80,45 @@ public class Venue {
 		this.capacity = capacity;
 	}
 	
-	public void setLocation(String inputLocationString) {
+	public String getAddress1() {
+		return address1;
+	}
+
+	public void setAddress1(String address1) {
+		this.address1 = address1;
+	}
+
+	public String getAddress2() {
+		return address2;
+	}
+
+	public void setAddress2(String address2) {
+		this.address2 = address2;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getPostcode() {
+		return postcode;
+	}
+
+	public void setPostcode(String postcode) {
+		this.postcode = postcode;
+	}
+
+	public void updateLocation() {
+		
+		String inputLocationString = getLocationString();
+		
 		MapboxGeocoding locationQuery = MapboxGeocoding.builder()
 			.accessToken("pk.eyJ1IjoiajMzMDM2YWoiLCJhIjoiY2s4eGhsMjdoMDk0dzNscDVidXd0OGc3dyJ9.wDg8cWDqltVSBrXxf8R9mg")
-			.query(inputLocationString)
+			.query(inputLocationString)//.country(string)
 			.build();
 		
 		locationQuery.enqueueCall(new Callback<GeocodingResponse>() {
@@ -118,7 +157,6 @@ public class Venue {
 		try {
 			Thread.sleep(1000L);
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
@@ -132,12 +170,28 @@ public class Venue {
 		return longitude;
 	}
 	
+	// geocode format: {house number} {street} {city} {state} {zip}
+	// e.g. {123} {Main St} {Swindon} {SN2 2DQ}	
 	public String getLocationString() {
-		return locationString;
+		String location = address1;
+		
+		if(address2 != null && !address2.contentEquals(""))
+			location += " " + address2;
+		
+		if(city != null && !city.contentEquals(""))
+			location += " " + city;
+		
+		if(postcode != null && !postcode.contentEquals(""))
+			location += " " + postcode;
+		
+		return location;
 	}
 	
-	public void setLocationString(String locationString) {
-		this.locationString = locationString;
+	public void setLocationFields(String address1, String address2, String city, String postcode) {
+		this.address1 = address1;
+		this.address2 = address2;
+		this.city = city;
+		this.postcode = postcode;
 	}
 	
 }
