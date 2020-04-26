@@ -4,29 +4,33 @@
       layout:decorate="~{layouts/default}">
 <head>
   <title>Event information</title>
+
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+  <script src="https://api.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.js"></script>
+  <link href="https://api.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.css" rel="stylesheet" />
 </head>
 
 <body>
   <div layout:fragment="content">
 		<blockquote>
 			<h1><p th:text="${event.name}">Name</p></h1>
-			
+
 			<h2>Venue</h2>
 			<p><a th:href="@{'/venues/' + ${event.venue.id}}" th:text="${event.venue.name}">Venue</a></p>
-			
+
 			<h2>Event date</h2>
 			<p th:text="${#temporals.format(event.date, 'dd LLLL yyyy')}">Date</p>
-					
+
 			<h2>Event time</h2>
 			<p th:text="${event.time}">Time</p>
-			
+
 			<div th:style="${event.description != null and event.description != '' ? 'display:block' : 'display:none'}" >
 				<h2>Description</h2>
 				<p th:text="${event.description}">Description</p>
 			</div>
-			
+
 		</blockquote>
-	
+
 		<div>
 			<ul>
 				<li style="display:inline-block; margin-left:-40px;">
@@ -41,11 +45,46 @@
 				<li style="display:inline-block; margin-left:50px;">
 					<div sec:authorize="isAuthenticated()">
 						<a th:href="@{/events/delete_event(ID=${event.id})}" role="button" class="btn btn-danger">
-						Delete<i class="fas fa-trash" aria-hidden="false"></i></a> 			
-				  </div> 
+						Delete<i class="fas fa-trash" aria-hidden="false"></i></a>
+				  </div>
 			  </li>
 		  </ul>
-	  </div>  
+	  </div>
   </div>
+
+    <div id='map' style='width: 100%; height: 350px;'></div>
+  <script th:inline="javascript">
+
+      // Mapbox api key
+      mapboxgl.accessToken = 'pk.eyJ1IjoiajMzMDM2YWoiLCJhIjoiY2s4eGhsMjdoMDk0dzNscDVidXd0OGc3dyJ9.wDg8cWDqltVSBrXxf8R9mg';  // add api key
+
+      // Add map
+      var map = new mapboxgl.Map({
+      container: 'map',
+      style: 'mapbox://styles/mapbox/streets-v11',
+      center: [-74.5, 40],  /*[- long lat -]*/
+      zoom: 5
+    });
+
+    // add event to the map
+    var event = [[${event}]];
+    addMarkerPopup(event);
+
+    // callback function to add events
+    function addMarkerPopup(e, index) {
+      var coord = [-76.5, 39]; /*[- e.venue.longlat -]*/
+
+      // create the popup
+      var popup = new mapboxgl.Popup({offset: 25})
+        .setText(e.name);
+
+      // add marker to map with pop up
+      var marker = new mapboxgl.Marker({draggable: true})
+        .setLngLat(coord)
+        .setPopup(popup)
+        .addTo(map);
+    }
+  </script>
+
 </body>
 </html>
