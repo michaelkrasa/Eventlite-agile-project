@@ -299,11 +299,9 @@ public class VenuesControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(view().name("venues/update"))
 				.andExpect(model().attributeExists("venueToUpdate"))
-				.andExpect(model().attributeExists("venues"))
 				.andExpect(handler().methodName("updateVenue"));
 		
 		verify(venueService, VerificationModeFactory.times(1)).findById(ID);
-		verify(venueService, VerificationModeFactory.times(1)).findAll();
 		
 	}
 	
@@ -320,11 +318,9 @@ public class VenuesControllerTest {
 				.andExpect(status().isOk())
 				.andExpect(view().name("venues/update"))
 				.andExpect(model().attributeDoesNotExist("venueToUpdate"))
-				.andExpect(model().attributeExists("venues"))
 				.andExpect(handler().methodName("updateVenue"));
 		
 		verify(venueService, VerificationModeFactory.times(1)).findById(ID);
-		verify(venueService, VerificationModeFactory.times(1)).findAll();
 	}
 	
 	// test that adding a Venue's location with a string, converts that into a coordinate to be stored.
