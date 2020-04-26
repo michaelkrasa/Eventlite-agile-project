@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 //import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,13 +36,17 @@ public class Venue {
 	@GeneratedValue
 	private long id;
 
+	@NotNull(message = "Required")
 	private String name;
 
 	private int capacity;
 	
-	private String address1 = "";
-	private String address2 = "";
+	@NotNull(message = "Required")
+	private String address1;
+	private String address2;
 	private String city;
+	
+	@NotNull(message = "Required")
 	private String postcode ;
 	
 	private String locationString; // used to check if its been updated to avoid unnecesary api Calls
@@ -140,6 +145,8 @@ public class Venue {
 				  log.info("[Geocode request] : lat,long : " + latitude + ", " + longitude);
 		 
 				} else {
+					longitude = 0;
+					latitude = 0;
 		 
 				  // No result for your request were found.
 				  log.info("[Geocode request] : onResponse: No result found");
