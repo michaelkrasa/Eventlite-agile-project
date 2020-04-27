@@ -50,41 +50,44 @@
 			  </li>
 		  </ul>
 	  </div>
-  </div>
 
     <div id='map' style='width: 100%; height: 350px;'></div>
-  <script th:inline="javascript">
-
-      // Mapbox api key
-      mapboxgl.accessToken = 'pk.eyJ1IjoiajMzMDM2YWoiLCJhIjoiY2s4eGhsMjdoMDk0dzNscDVidXd0OGc3dyJ9.wDg8cWDqltVSBrXxf8R9mg';  // add api key
-
-      // Add map
-      var map = new mapboxgl.Map({
-      container: 'map',
-      style: 'mapbox://styles/mapbox/streets-v11',
-      center: [-74.5, 40],  /*[- long lat -]*/
-      zoom: 5
-    });
-
-    // add event to the map
-    var event = [[${event}]];
-    addMarkerPopup(event);
-
-    // callback function to add events
-    function addMarkerPopup(e, index) {
-      var coord = [-76.5, 39]; /*[- e.venue.longlat -]*/
-
-      // create the popup
-      var popup = new mapboxgl.Popup({offset: 25})
-        .setText(e.name);
-
-      // add marker to map with pop up
-      var marker = new mapboxgl.Marker({draggable: true})
-        .setLngLat(coord)
-        .setPopup(popup)
-        .addTo(map);
-    }
-  </script>
-
+	  <script th:inline="javascript">
+	
+	      // Mapbox api key
+	      mapboxgl.accessToken = 'pk.eyJ1IjoiajMzMDM2YWoiLCJhIjoiY2s4eGhsMjdoMDk0dzNscDVidXd0OGc3dyJ9.wDg8cWDqltVSBrXxf8R9mg';  // add api key
+	
+				// Get the event
+				var event = [[${event}]];
+	
+	      // Add map
+	      var map = new mapboxgl.Map({
+	      container: 'map',
+	      style: 'mapbox://styles/mapbox/streets-v11',
+	      center: [event.venue.longitude, event.venue.latitude],
+	      zoom: 11
+	    });
+	
+	    // Add marker to the map
+	    addMarkerPopup(event);
+	
+	    // Callback function to add events
+	    function addMarkerPopup(e, index) {
+	    
+	      // Get the coordinates of the event
+	      var coord = [e.venue.longitude, e.venue.latitude];
+	
+	      // Create the popup
+	      var popup = new mapboxgl.Popup({offset: 25})
+	        .setText(e.name);
+	
+	      // Add marker to map with pop up
+	      var marker = new mapboxgl.Marker({draggable: true})
+	        .setLngLat(coord)
+	        .setPopup(popup)
+	        .addTo(map);
+	    }
+	  </script>
+  </div>
 </body>
 </html>
