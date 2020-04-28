@@ -182,6 +182,180 @@ public class VenuesControllerTest {
 		verify(venueService).findById(0L);
 	}
 	
+	@Test void newVenuePage() throws Exception {
+		// Load new venues page
+		mvc.perform(get("/venues/new")
+			        .accept(MediaType.TEXT_HTML))
+		            .andExpect(status().is(200))
+		            .andExpect(view().name("venues/new"));
+	}
+	
+	
+	@Test void newVenue() throws Exception {
+		ArgumentCaptor<Venue> arg = ArgumentCaptor.forClass(Venue.class);
+		
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<String,String>();
+		params.add("name", "Kilburn Building");
+		params.add("address1", "Kilburn Building University of Manchester");
+		params.add("address2", "Oxford Rd");
+		params.add("city", "Manchester");
+		params.add("postcode", "M13 9PL");
+		params.add("capacity", "20");
+		
+		mvc.perform(MockMvcRequestBuilders.post("/venues").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.params(params)
+				.accept(MediaType.TEXT_HTML)
+				.with(csrf()))
+		.andExpect(status().is3xxRedirection()).andExpect(content().string(""))
+		.andExpect(view().name("redirect:/venues")).andExpect(model().hasNoErrors())
+		.andExpect(handler().methodName("createVenue")).andExpect(flash().attributeExists("ok_message"));
+
+		verify(venueService).save(arg.capture());
+		System.out.println("=============================");
+		System.out.println(arg.getValue().getName());
+		System.out.println("=============================");
+		assertThat("Kilburn Building", equalTo(arg.getValue().getName()));
+		assertThat("Kilburn Building University of Manchester", equalTo(arg.getValue().getAddress1()));
+		assertThat("Oxford Rd", equalTo(arg.getValue().getAddress2()));
+		assertThat("Manchester", equalTo(arg.getValue().getCity()));
+		assertThat("M13 9PL", equalTo(arg.getValue().getPostcode()));
+		assertThat(20, equalTo(arg.getValue().getCapacity()));
+		
+//		// Test no authentication
+//		mvc.perform(MockMvcRequestBuilders.post("/venues").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+//				.params(params)
+//				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound())
+//		.andExpect(header().string("Location", endsWith("/sign-in")));
+//
+//		verify(eventService, never()).save(event);
+//		
+
+	}
+	
+	@Test
+	public void addVenueWithNoAuthentication() throws Exception {
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<String,String>();
+		params.add("name", "Kilburn Building");
+		params.add("address1", "Kilburn Building University of Manchester");
+		params.add("address2", "Oxford Rd");
+		params.add("city", "Manchester");
+		params.add("postcode", "M13 9PL");
+		params.add("capacity", "20");
+				
+		mvc.perform(MockMvcRequestBuilders.post("/venues").contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.params(params)
+				.accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isFound())
+		.andExpect(header().string("Location", endsWith("/sign-in")));
+
+		verify(venueService, never()).save(venue);
+	}
+	
+	
+	@Test
+	public void addVenueWithNoName() throws Exception {
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<String,String>();
+		params.add("address1", "Kilburn Building University of Manchester");
+		params.add("address2", "Oxford Rd");
+		params.add("city", "Manchester");
+		params.add("postcode", "M13 9PL");
+		params.add("capacity", "20");
+		
+		mvc.perform(MockMvcRequestBuilders.post("/venues").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.params(params).accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
+		.andExpect(view().name("venues/new"))
+		.andExpect(model().attributeHasFieldErrors("venue", "name"))
+		.andExpect(handler().methodName("createVenue")).andExpect(flash().attributeCount(0));
+
+		verify(venueService, never()).save(venue);
+	}
+	
+	@Test
+	public void addVenueWithNoAddress1() throws Exception {
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<String,String>();
+		params.add("name", "Kilburn Building");
+		params.add("address1", "");
+		params.add("address2", "Oxford Rd");
+		params.add("city", "Manchester");
+		params.add("postcode", "M13 9PL");
+		params.add("capacity", "20");
+		
+		mvc.perform(MockMvcRequestBuilders.post("/venues").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.params(params).accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
+		.andExpect(view().name("venues/new"))
+		.andExpect(model().attributeHasFieldErrors("venue", "address1"))
+		.andExpect(handler().methodName("createVenue")).andExpect(flash().attributeCount(0));
+
+		verify(venueService, never()).save(venue);
+	}
+
+	@Test
+	public void addVenueWithNoPostcode() throws Exception {
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<String,String>();
+		params.add("name", "Kilburn Building");
+		params.add("address1", "Kilburn Building University of Manchester");
+		params.add("address2", "Oxford Rd");
+		params.add("city", "Manchester");
+		params.add("postcode", "");
+		params.add("capacity", "20");
+		
+		mvc.perform(MockMvcRequestBuilders.post("/venues").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.params(params).accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
+		.andExpect(view().name("venues/new"))
+		.andExpect(model().attributeHasFieldErrors("venue", "postcode"))
+		.andExpect(handler().methodName("createVenue")).andExpect(flash().attributeCount(0));
+
+		verify(venueService, never()).save(venue);
+	}
+	
+	@Test
+	public void addVenueWithNoCapacity() throws Exception {
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<String,String>();
+		params.add("name", "Kilburn Building");
+		params.add("address1", "");
+		params.add("address2", "Oxford Rd");
+		params.add("city", "Manchester");
+		params.add("postcode", "M13 9PL");
+		params.add("capacity", "");
+		
+		mvc.perform(MockMvcRequestBuilders.post("/venues").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.params(params).accept(MediaType.TEXT_HTML).with(csrf())).andExpect(status().isOk())
+		.andExpect(view().name("venues/new"))
+		.andExpect(model().attributeHasFieldErrors("venue", "capacity"))
+		.andExpect(handler().methodName("createVenue")).andExpect(flash().attributeCount(0));
+
+		verify(venueService, never()).save(venue);
+	}
+	
+	@Test
+	public void addVenueLongName() throws Exception {
+		MultiValueMap<String, String> params = new LinkedMultiValueMap<String,String>();
+		params.add("name", "Test event test event test event test event test event test event "
+				+ "test event test event test event test event test event test event"
+				+ "test event test event test event test event test event test event"
+				+ "test event test event test event test event test event test event");
+		params.add("address1", "Kilburn Building University of Manchester");
+		params.add("address2", "Oxford Rd");
+		params.add("city", "Manchester");
+		params.add("postcode", "M13 9PL");
+		
+		mvc.perform(MockMvcRequestBuilders.post("/venues").with(user("Rob").roles(Security.ADMIN_ROLE))
+				.contentType(MediaType.APPLICATION_FORM_URLENCODED)
+				.params(params)
+				.accept(MediaType.TEXT_HTML)
+				.with(csrf()))
+		.andExpect(status().isOk()).andExpect(view().name("venues/new"))
+		.andExpect(model().attributeHasFieldErrors("venue", "name"))
+		.andExpect(handler().methodName("createVenue")).andExpect(flash().attributeCount(0));
+
+		verify(venueService, never()).save(venue);
+	}
+	
+	
 	@Test
 	public void deleteVenueWhileNoVenue() throws Exception {	
 		// data needed for test

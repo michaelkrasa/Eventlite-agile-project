@@ -128,12 +128,8 @@ public class VenuesController {
 	
 	// POST request made when submitting form on "venues/new", to create the new event
 	@RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-	public String createEvent(@RequestBody @Valid @ModelAttribute Venue venue,
+	public String createVenue(@RequestBody @Valid @ModelAttribute Venue venue,
 			BindingResult errors, Model model, RedirectAttributes redirectAttrs) {
-		
-		System.out.println("=============================");
-		System.out.println(venue.getPostcode());
-		System.out.println("=============================");
 		
 		// If form has errors, stay on venues/new (stay on form)
 		if (errors.hasErrors()) {
@@ -143,11 +139,7 @@ public class VenuesController {
 		
 		// Set geolocation information
 		venue.updateLocation();
-		
-		// Test
-		log.info("Location updated to: " + venue.getLocationString());
-		log.info("Lat, Long updated to: " + venue.getLatitude() + ", " + venue.getLongitude());
-		
+				
 		// Check lon and lat valid
 		if(venue.getLongitude() == 0 && venue.getLatitude() == 0) {
 			model.addAttribute("locationError", "Location is invalid");

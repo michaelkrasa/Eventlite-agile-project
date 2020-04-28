@@ -39,7 +39,7 @@ public class Venue {
 	@GeneratedValue
 	private long id;
 	
-	@Size(max = 256)
+	@Size(min = 1, max = 256)
 	@NotNull(message = "Venues must have a name")
 	private String name;
 	
