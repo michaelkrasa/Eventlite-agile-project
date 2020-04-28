@@ -8,17 +8,14 @@
 
 <body>
   <div layout:fragment="content">
-	<blockquote>
-		<h1><p th:text="${venue.name}">Name</p></h1>
-		
-		<h2>Capacity</h2>
-			<p th:text="${venue.capacity}">Capacity</p>
-			
-						
-	</blockquote>
+	  <blockquote>
+		  <h1><p th:text="${venue.name}">Name</p></h1>
+		  <h2>Capacity</h2>
+			<p th:text="${venue.capacity}">Capacity</p>				
+	  </blockquote>
 	
-	<div th:if="${events}">
-			<h1>Upcoming events at this venue</h1>
+	  <div th:if="${events}">
+		  <h1>Upcoming events at this venue</h1>
 	    
 	    <table class="table table-striped table-hover" id="eventsTable">
 	    	<thead>
@@ -43,10 +40,27 @@
 	      </tbody>
 	    </table>
 	  </div>
-	
-	<a class="btn btn-primary" role="button" th:href="@{/venues}"><i class="fas fa-arrow-left" aria-hidden="false"></i>
-	Back</a>
-
+	  
+	  <div>
+	    <ul>
+	      <li style="display:inline-block; margin-left:-40px;">
+	        <a class="btn btn-primary" role="button" th:href="@{/venues}"><i class="fas fa-arrow-left" aria-hidden="false"></i>
+	        Back</a>
+	      </li>
+	      <li style="display:inline-block; margin-left:700px;">
+	        <div sec:authorize="isAuthenticated()">
+	          <a class="btn btn-primary" type="button" th:href="@{/venues/update/?id={id}(id=${venue.id})}" th:text="Update">Update</a>
+	        </div>
+	      </li>       
+	      <li style="display:inline-block; margin-left:50px;">
+				<div sec:authorize="isAuthenticated()">
+					<a th:href="@{/venues/delete_venue(ID=${venue.id})}" role="button" class="btn btn-danger">
+					Delete<i class="fas fa-trash" aria-hidden="false"></i></a> 			
+			  </div> 
+		</li>  
+	    </ul>
+	  </div>
+	  
   </div>
 
 </body>

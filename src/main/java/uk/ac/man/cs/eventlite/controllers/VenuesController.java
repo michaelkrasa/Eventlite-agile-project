@@ -3,6 +3,7 @@ package uk.ac.man.cs.eventlite.controllers;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,6 +18,8 @@ import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -36,6 +39,8 @@ import uk.ac.man.cs.eventlite.entities.Venue;
 public class VenuesController {
 
 	private final static Logger log = LoggerFactory.getLogger(VenuesController.class);
+	
+	private long idOfUpdatedVenue = 0;
 	
 	@Autowired
 	private VenueService venueService;
@@ -64,9 +69,11 @@ public class VenuesController {
 		
 		
 		List<Event> events = eventService.findAllByVenue(venue.get());
-		for(Event e: events) {
+		Iterator<Event> iterator = events.iterator();
+		while(iterator.hasNext()) {
+			Event e = iterator.next();
 			if(e.getDate().compareTo(LocalDate.now())<0) {
-				events.remove(e); // remove events before today
+				iterator.remove(); // remove events before today
 			}
 			else
 				break;	// in order last to first, as soon as one is after today, no more need to be removed
@@ -127,20 +134,95 @@ public class VenuesController {
 		System.out.println("=============================");
 		System.out.println(venue.getPostcode());
 		System.out.println("=============================");
-
+		
+		// Set geolocation information
+		venue.updateLocation();
+		
+		log.info("Location updated to: " + venue.getLocationString());
+		log.info("Lat, Long updated to: " + venue.getLatitude() + ", " + venue.getLongitude());
+		
+		if(venue.getLongitude() == 0 && venue.getLatitude() == 0) {
+			model.addAttribute("locationError", "Location is invalid");
+			return "venues/new";
+		}
 		
 		// If form has errors, stay on venues/new (stay on form)
 		if (errors.hasErrors()) {
 			model.addAttribute("venue", venue);
 			return "venues/new";
-		}	
+		}
 		
 		// If no errors, save the venue
 		venueService.save(venue);
+		
 		redirectAttrs.addFlashAttribute("ok_message", "New venue added.");
 		
 		// Go back to /venues
 		return "redirect:/venues";
 	}
 
+	@RequestMapping(value="/update", method = RequestMethod.GET)
+	public String updateVenue(Model model, @RequestParam String id) {
+		log.info("Update method called");
+		log.info("id: " + id);
+		
+		// Convert the id into a long and store in the class
+		idOfUpdatedVenue = Long.parseLong(id);
+		
+		// Find the venueToUpdate and add it to model
+		Optional<Venue> venue = venueService.findById(idOfUpdatedVenue);
+		if (venue.isPresent()) {
+			model.addAttribute("venueToUpdate", venue.get());
+		}
+
+		
+		// Go to the update page
+		return "venues/update";
+	}
+	
+	@RequestMapping(value="/update", method=RequestMethod.POST)
+	public String saveUpdatedVenue(@ModelAttribute("updatedVenue") Venue venueToUpdate, BindingResult errors, Model model) {
+		
+		// If form has errors, stay on event/new (stay on form)
+		
+		
+		// Get the venue we want to update
+		Optional<Venue> venue = venueService.findById(idOfUpdatedVenue);
+		
+		// only update if new address is different
+		if(!venue.get().getLocationString().equals(venueToUpdate.getLocationString())) {
+			venue.get().setLocationFields(venueToUpdate.getAddress1(), venueToUpdate.getAddress2(),
+										  venueToUpdate.getCity(), venueToUpdate.getPostcode());
+			
+						
+			// update to use new location fields
+			venue.get().updateLocation();
+			
+			log.info("Location updated to: " + venue.get().getLocationString());
+			log.info("Lat, Long updated to: " + venue.get().getLatitude() + ", " + venue.get().getLongitude());
+			
+			if(venue.get().getLongitude() == 0 && venue.get().getLatitude() == 0) {
+				model.addAttribute("locationError", "Location is invalid");
+				model.addAttribute("venueToUpdate", venueToUpdate);
+				return "venues/update";
+			}
+		}
+		
+		if (errors.hasErrors()) { 
+			model.addAllAttributes(errors.getModel());
+			model.addAttribute("venueToUpdate", venueToUpdate);
+			return "venues/update";
+		}
+		
+		
+		// Set the values of this venue to what the user inputted
+		venue.get().setName(venueToUpdate.getName());
+		venue.get().setCapacity(venueToUpdate.getCapacity());
+		
+		// Save it
+		venueService.save(venue.get());
+		// Go back to /venues
+		return "redirect:/venues";
+	}
+	
 }

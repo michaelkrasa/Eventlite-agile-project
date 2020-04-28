@@ -281,6 +281,64 @@ public class VenuesControllerTest {
 		verify(venueService, VerificationModeFactory.times(1)).deleteById(ID);
 	}
 	
+	@Test
+	public void updateVenueWhereVenueExists() throws Exception {
+		
+		Venue v = new Venue();
+		v.setName("testVenue");
+		v.setCapacity(80);
+		long ID = (long)1;
+		v.setId(ID);	
+		Optional<Venue> testVenue = Optional.of(v);	
+		
+		when(venueService.findById(ID)).thenReturn(testVenue);
+		when(venueService.findAll()).thenReturn(Collections.<Venue> emptyList());
+		
+		mvc.perform(get("/venues/update?id=" + ID)
+				.accept(MediaType.TEXT_HTML))
+				.andExpect(status().isOk())
+				.andExpect(view().name("venues/update"))
+				.andExpect(model().attributeExists("venueToUpdate"))
+				.andExpect(handler().methodName("updateVenue"));
+		
+		verify(venueService, VerificationModeFactory.times(1)).findById(ID);
+		
+	}
 	
+	@Test
+	public void updateVenueWhereNoVenue() throws Exception {
+		long ID = (long)1;
+		Optional<Venue> testVenue = Optional.empty();
+		
+		when(venueService.findById(ID)).thenReturn(testVenue);
+		when(venueService.findAll()).thenReturn(Collections.<Venue> emptyList());
+		
+		mvc.perform(get("/venues/update?id=" + ID)
+				.accept(MediaType.TEXT_HTML))
+				.andExpect(status().isOk())
+				.andExpect(view().name("venues/update"))
+				.andExpect(model().attributeDoesNotExist("venueToUpdate"))
+				.andExpect(handler().methodName("updateVenue"));
+		
+		verify(venueService, VerificationModeFactory.times(1)).findById(ID);
+	}
+	
+	// test that adding a Venue's location with a string, converts that into a coordinate to be stored.
+	@Test
+	public void mapboxAddLocation() {
+		Venue testVenue = new Venue();
+		
+		// double defaults at 0
+		assertTrue(testVenue.getLatitude() == 0 && testVenue.getLongitude() == 0);
+		
+		// update location
+		testVenue.setAddress1("Kilburn Building");
+		testVenue.setCity("Manchester");
+		testVenue.updateLocation();
+		
+		// 53.467524, -2.233915 are the lat, long of Kilburn ( results of the first call of this and verified in google maps)
+		assertTrue(testVenue.getLatitude() == 53.467524 && testVenue.getLongitude() == -2.233915);
+		assertTrue(testVenue.getLocationString().contentEquals("Kilburn Building Manchester"));
+	}
 }
 

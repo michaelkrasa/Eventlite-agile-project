@@ -1,0 +1,79 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/default}">
+<head>
+  <title>Update a venue</title>
+</head>
+<body>
+  <div layout:fragment="content">
+    <h1>Update venue</h1>
+
+		<form action="#" th:action="@{/venues/update}" th:object="${venueToUpdate}" method="post" modelAttribute="updatedVenue">
+		
+	  	<table class="table table-striped table-hover">
+		  
+			<tr>
+				<td><label for="name">Location Display Name:</label></td>
+				<td>
+					<div class="form-group" th:classappend="${#fields.hasErrors('name')}? has-error">
+					<input class="form-control" type="text" name="name" id="name" th:value="${venueToUpdate.name}" autofocus="autofocus" />
+					<p class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}">errors</p>
+					</div>
+				</td>
+			</tr>
+			
+			<tr>
+				<td><label >Location Address:</label></td>
+				<td>
+					<p class="text-danger" th:if="${locationError}"> The entered address was invalid, try again</p>
+					
+					<label for="address1">Address line 1</label>
+					<div class="form-group" th:classappend="${#fields.hasErrors('address1')}? has-error">
+					<input class="form-control" type="text" name="address1" id="address1" th:value="${venueToUpdate.address1}" autofocus="autofocus" />
+					<p class="text-danger" th:if="${#fields.hasErrors('address1')}" th:errors="*{address1}">errors</p>
+					</div>
+					
+					<label for="address2">Address line 2</label>
+					<div class="form-group" th:classappend="${#fields.hasErrors('address2')}? has-error">
+					<input class="form-control" type="text" name="address2" id="address2" th:value="${venueToUpdate.address2}" autofocus="autofocus" />
+					<p class="text-danger" th:if="${#fields.hasErrors('address2')}" th:errors="*{address2}">errors</p>
+					</div>
+					
+					<label for="city">City</label>
+					<div class="form-group" th:classappend="${#fields.hasErrors('city')}? has-error">
+					<input class="form-control" type="text" name="city" id="city" th:value="${venueToUpdate.city}" autofocus="autofocus" />
+					<p class="text-danger" th:if="${#fields.hasErrors('city')}" th:errors="*{city}">errors</p>
+					</div>
+					
+					<label for="postcode">Post code</label>
+					<div class="form-group" th:classappend="${#fields.hasErrors('postcode')}? has-error">
+					<input class="form-control" type="text" name="postcode" id="postcode" th:value="${venueToUpdate.postcode}" autofocus="autofocus" />
+					<p class="text-danger" th:if="${#fields.hasErrors('postcode')}" th:errors="*{postcode}">errors</p>
+					<span class="help-block" th:if="${#fields.hasErrors('postcode')}" th:errors="*{postcode}"></span>
+					</div>
+					
+				</td>
+			</tr>  
+	      
+	      	<tr>
+	      		<td><label for="capacity">Capacity:</label></td>
+		      	<td>
+		      	<!-- Capacity -->
+		      		<div class="form-group" th:classappend="${#fields.hasErrors('capacity')}? has-error">
+		       		<input class="form-control" type="number" name="capacity" id="capacity" th:value="${venueToUpdate.capacity}" autofocus="autofocus" />
+		       		<p class="text-danger" th:if="${#fields.hasErrors('capacity')}" th:errors="*{capacity}">errors</p>
+		      	</div>
+			  	</td>
+		  	</tr>
+		  
+		  </table>
+		     
+		  <button class="btn btn-primary" type="submit"><i class="fas fa-bookmark" aria-hidden="true"></i> Save</button>
+	    <a class="btn btn-warning" role="button" href="/venues"><i class="fas fa-ban" aria-hidden="true"></i> Cancel</a>
+	
+		</form>
+  </div>
+
+</body>
+</html>

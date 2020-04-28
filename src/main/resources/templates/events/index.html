@@ -3,8 +3,17 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{layouts/default}">
 <head>
-  <title>All events</title>
+	<title>All events</title>
+	
+	<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+	<script src="https://api.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.js"></script>
+	<link href="https://api.mapbox.com/mapbox-gl-js/v1.9.1/mapbox-gl.css" rel="stylesheet" />
 </head>
+<!--
+<style>
+	#map { position: absolute; top: 0; bottom: 0; width: 100%; }
+</style>
+-->
 <body>
   <div layout:fragment="content">
 	  <form th:action="@{/events/foundEvents}" th:object="${event}" method="get">
@@ -135,9 +144,104 @@
     
     </div>
     
-    <p>
-      <a class="btn btn-primary" role="button" href="/events/new"><i class="fas fa-plus" aria-hidden="true"></i> Add event</a>
-    </p>
+   
+	<div id='map' style='width: 100%; height: 350px;'></div>        
+	<script th:inline="javascript">  	
+	
+    	// mapbox api key
+    	mapboxgl.accessToken = 'pk.eyJ1IjoiajMzMDM2YWoiLCJhIjoiY2s4eGhsMjdoMDk0dzNscDVidXd0OGc3dyJ9.wDg8cWDqltVSBrXxf8R9mg';  
+    	
+    	var events = [[${future_events}]];
+    	var eventCoords = [];
+    	var c;
+		for(i = 0; i < events.length; i++) {
+			eventCoords.push([events[i].venue.longitude, events[i].venue.latitude]);	
+		}  	
+    	
+    	var screen = findBounds(eventCoords);	
+    	
+    	// add map 
+    	var map = new mapboxgl.Map({
+			container: 'map', 
+			style: 'mapbox://styles/mapbox/streets-v11',
+			minZoom: 3,
+			maxZoom: 17,
+			bounds: screen,                                              
+			fitBoundsOptions: {padding: {top: 10, bottom:25, left: 15, right: 5}},	
+		});
+		
+		// add all future events to the map
+		var eventCoordsUsed = [];
+		
+		var i;
+		for(i = 0; i < events.length; i++) {		
+			var coord = [events[i].venue.longitude, events[i].venue.latitude];   		                       
+			var text = events[i].name;										
+			var doesInclude = eventCoordsUsed.includes(coord);              
+			if (doesInclude) {
+				coord = newCoord(coord); 
+			}		
+			else {															
+				eventCoordsUsed.push(coord);
+			}												
+							
+			// create the popup
+			var popup = new mapboxgl.Popup({offset: 25})
+				.setText(text);			                                   
+			
+			// add marker to map with pop up
+			var marker = new mapboxgl.Marker()              
+				.setLngLat(coord)  
+				.setPopup(popup) 
+				.addTo(map);		
+		}	
+			
+		// spreads out events in small radius that have the same venue
+		function newCoord(coord) {
+			// radius of dispersion
+			var radius = 0.000004;
+			// get a random point in a circle 
+			var r = Math.random() * radius;
+			var ang = Math.random() * 2 * Math.PI;
+			// convert polar coord to cartisian coord
+			var x = r * Math.cos(ang);
+			var y = r * Math.sin(ang);
+			return [coord[0]+y, coord[1]+x];
+		}
+		
+		// find and return LngLatBounds object for fitting bounds
+		function findBounds(points) {
+			var largestLon = Number(points[0][0]);
+			var largestLat = Number(points[0][1]);
+			var smallestLon = Number(points[0][0]);
+			var smallestLat = Number(points[0][1]);
+
+			// finds the smallest and largest long and lat values out of points array
+			var i;
+			for(i = 1; i < points.length; i++) {
+				if (parseFloat(points[i][0]) < smallestLon) 
+					smallestLon = parseFloat(points[i][0]);
+				if (parseFloat(points[i][0]) > largestLon)
+					largestLon = parseFloat(points[i][0]);
+				if (parseFloat(points[i][1]) < smallestLat)
+					smallestLat = parseFloat(points[i][1]);
+				if (parseFloat(points[i][1]) > largestLat)
+					largestLat = parseFloat(points[i][1]);
+			}	
+
+			// set and return bounds
+			var sw = new mapboxgl.LngLat(smallestLon, smallestLat);
+			var ne = new mapboxgl.LngLat(largestLon, largestLat);
+			return new mapboxgl.LngLatBounds(sw, ne);
+		} 
+		   
+    </script>
+             
+  	<div>  
+	    <p>
+	      <a class="btn btn-primary" role="button" href="/events/new"><i class="fas fa-plus" aria-hidden="true"></i> Add event</a>
+	    </p>
+    </div>  
   
   </div>
 
