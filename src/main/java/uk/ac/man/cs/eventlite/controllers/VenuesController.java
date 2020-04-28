@@ -135,20 +135,22 @@ public class VenuesController {
 		System.out.println(venue.getPostcode());
 		System.out.println("=============================");
 		
-		// Set geolocation information
-		venue.updateLocation();
-		
-		log.info("Location updated to: " + venue.getLocationString());
-		log.info("Lat, Long updated to: " + venue.getLatitude() + ", " + venue.getLongitude());
-		
-		if(venue.getLongitude() == 0 && venue.getLatitude() == 0) {
-			model.addAttribute("locationError", "Location is invalid");
-			return "venues/new";
-		}
-		
 		// If form has errors, stay on venues/new (stay on form)
 		if (errors.hasErrors()) {
 			model.addAttribute("venue", venue);
+			return "venues/new";
+		}
+		
+		// Set geolocation information
+		venue.updateLocation();
+		
+		// Test
+		log.info("Location updated to: " + venue.getLocationString());
+		log.info("Lat, Long updated to: " + venue.getLatitude() + ", " + venue.getLongitude());
+		
+		// Check lon and lat valid
+		if(venue.getLongitude() == 0 && venue.getLatitude() == 0) {
+			model.addAttribute("locationError", "Location is invalid");
 			return "venues/new";
 		}
 		
