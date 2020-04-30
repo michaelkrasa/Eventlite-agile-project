@@ -56,7 +56,7 @@
 		<form th:action="@{'/events/' + ${event.id} + '/tweeted'}" th:object="${event}" method="get">
 	  		<div class="form-row">
 		  		<div class="col-md-11 my-1">
-		    		<input class="form-control my-0 py-1 col" type="text" id="tweet" name="tweet" th:placeholder="${event.name}" />
+		    		<input class="form-control my-0 py-1 col" type="text" id="tweet" name="tweet" th_field="*{tweet}" th:placeholder="${event.name}" />
 		  		</div>
 		  		<div class="col-auto my-1">
 	        		<input class="btn btn-primary mb-2" type="submit" value="Tweet"/>

@@ -38,6 +38,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import twitter4j.Query;
+import twitter4j.QueryResult;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -226,11 +228,12 @@ public class EventsController {
 	
 	@RequestMapping(value = "/{eventId}/tweeted", method = RequestMethod.GET)
 	public String updateStatus(@RequestParam (value = "tweet", required = false) String tweet, @PathVariable String eventId) throws TwitterException {
-		log.info("Tweet sent");
 		
+		if (!tweet.isEmpty()) {	
+		log.info("Tweet sent - " + tweet);
 		Twitter twitter = TwitterService();
-		
 		twitter.updateStatus(tweet);
+		}
 		
 		return ("redirect:/events/" + eventId);
 	}
@@ -257,5 +260,20 @@ public class EventsController {
 		
 		model.addAttribute("past_tweets", statuses);
 	}
+	
+//	public void findTweets(Model model)  throws TwitterException {
+//		log.info("searching for tweet");
+//		
+//		Twitter twitter = TwitterService();
+//		
+//		String queryString = "Very specific tweet: COMP23412 Showcase, group Alpha 3";
+//		
+//		Query query = new Query(queryString);
+//		QueryResult result = twitter.search(query);
+//		
+//		List<Status> tweets = result.getTweets();
+//		
+//		model.addAttribute("search_specific_tweet", tweets);
+//	}
 	
 }
