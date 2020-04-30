@@ -23,7 +23,7 @@ import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -34,10 +34,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import twitter4j.Status;
+import twitter4j.Twitter;
+import twitter4j.TwitterException;
+import twitter4j.TwitterFactory;
+import twitter4j.conf.ConfigurationBuilder;
 import uk.ac.man.cs.eventlite.dao.EventService;
+//import uk.ac.man.cs.eventlite.dao.TwitterService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
 
@@ -53,11 +60,14 @@ public class EventsController {
 	
 	@Autowired 
 	private VenueService venueService;
+	
+//	@Autowired
+//	private TwitterService twitterService;
 
 	@RequestMapping(method = RequestMethod.GET)
-	public String getAllEvents(Model model) {
+	public String getAllEvents(Model model) throws TwitterException {
 		
-		log.error("events loaded");
+		log.info("events loaded");
 
 		List<Event> futureEvents = new ArrayList<Event>();
 		List<Event> pastEvents = new ArrayList<Event>();
@@ -74,12 +84,14 @@ public class EventsController {
 		model.addAttribute("events", allEvents);
 		model.addAttribute("future_events", futureEvents);
 		model.addAttribute("past_events", pastEvents);
+		
+		getPastTweets(model);
 				
 		return "events/index";
 	}
 		
 	@RequestMapping(value = "/{eventId}", method = RequestMethod.GET)
-    public String getEventById(@PathVariable String eventId, Model model) {
+    public String getEventById(@PathVariable String eventId, Model model) throws TwitterException {
 		
 		Optional<Event> event = eventService.findById(Long.parseLong(eventId));
 		
@@ -189,7 +201,7 @@ public class EventsController {
 	}
 	
 	@RequestMapping(value = "/foundEvents", method = RequestMethod.GET)
-	public String getAllByName(@RequestParam (value = "search", required = false) String name, Model model) {
+	public String getAllByName(@RequestParam (value = "search", required = false) String name, Model model) throws TwitterException {
 		
 		List<Event> futureEvents = new ArrayList<Event>();
 		List<Event> pastEvents = new ArrayList<Event>();
@@ -207,6 +219,43 @@ public class EventsController {
 		model.addAttribute("search_future", futureEvents);
 		model.addAttribute("search_past", pastEvents);
 		
+		getPastTweets(model);
+		
 		return "events/index";
 	}
+	
+	@RequestMapping(value = "/{eventId}/tweeted", method = RequestMethod.GET)
+	public String updateStatus(@RequestParam (value = "tweet", required = false) String tweet, @PathVariable String eventId) throws TwitterException {
+		log.info("Tweet sent");
+		
+		Twitter twitter = TwitterService();
+		
+		twitter.updateStatus(tweet);
+		
+		return ("redirect:/events/" + eventId);
+	}
+	
+	public Twitter TwitterService() {
+		ConfigurationBuilder cb = new ConfigurationBuilder();	
+		cb.setDebugEnabled(true)
+		  .setOAuthConsumerKey("S3XBupwKFKkDrViDlXBsnSp3H")
+		  .setOAuthConsumerSecret("Y3ZdNVPDUyWZx85mnU2fEj5vTKfvVb234kKTjtIINhkBD9Rcl0")
+		  .setOAuthAccessToken("1254555795431227394-Px2eytiI8IvU8x9YnKRgZwAKLl8Auk")
+		  .setOAuthAccessTokenSecret("5SnhT8p2Cs2z7Ye4XisalmSghh1sTzcO9OtuvIxzoinb3");
+		TwitterFactory tf = new TwitterFactory(cb.build());
+		Twitter twitter = tf.getInstance();
+		return twitter;
+	}
+	
+	public void getPastTweets(Model model) throws TwitterException {
+		log.info("Past tweets loaded");
+		
+		Twitter twitter = TwitterService();
+		
+		List<Status> statuses = twitter.getHomeTimeline();
+		if (statuses.size() > 5) statuses = statuses.subList(0, 5);
+		
+		model.addAttribute("past_tweets", statuses);
+	}
+	
 }
