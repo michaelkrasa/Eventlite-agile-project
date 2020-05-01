@@ -19,6 +19,8 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 public class Security extends WebSecurityConfigurerAdapter {
 
 	public static final String ADMIN_ROLE = "ADMINISTRATOR";
+	public static final String ATTENDEE_ROLE = "ATTENDEE";
+	public static final String EVENT_ORGANISER_ROLE = "ORGANISER";
 
 	// List the mappings/methods for which no authorisation is required.
 	// By default we allow all GETs and full access to the H2 console.
@@ -53,9 +55,11 @@ public class Security extends WebSecurityConfigurerAdapter {
 		UserDetails rob = User.withUsername("Rob").password(encoder.encode("Haines")).roles(ADMIN_ROLE).build();
 		UserDetails caroline = User.withUsername("Caroline").password(encoder.encode("Jay")).roles(ADMIN_ROLE).build();
 		UserDetails markel = User.withUsername("Markel").password(encoder.encode("Vigo")).roles(ADMIN_ROLE).build();
-		UserDetails mustafa = User.withUsername("Mustafa").password(encoder.encode("Mustafa")).roles(ADMIN_ROLE)
-				.build();
+		UserDetails mustafa = User.withUsername("Mustafa").password(encoder.encode("Mustafa")).roles(ADMIN_ROLE).build();
+		UserDetails attendee = User.withUsername("attendee").password(encoder.encode("attendee")).roles(ATTENDEE_ROLE).build();
+		UserDetails organiser = User.withUsername("organiser").password(encoder.encode("organiser")).roles(EVENT_ORGANISER_ROLE).build();
+		
 
-		return new InMemoryUserDetailsManager(rob, caroline, markel, mustafa);
+		return new InMemoryUserDetailsManager(rob, caroline, markel, mustafa, attendee, organiser);
 	}
 }

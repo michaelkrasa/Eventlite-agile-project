@@ -38,12 +38,12 @@
 					Back</a>
 				</li>
 				<li style="display:inline-block; margin-left:700px;">
-					<div sec:authorize="isAuthenticated()">
+					<div sec:authorize="hasAnyRole('ADMINISTRATOR', 'ORGANISER')">
 						<a class="btn btn-primary" type="button" th:href="@{/events/update/?id={id}(id=${event.id})}" th:text="Update">Update</a>
 					</div>
 				</li>
 				<li style="display:inline-block; margin-left:50px;">
-					<div sec:authorize="isAuthenticated()">
+					<div sec:authorize="hasAnyRole('ADMINISTRATOR', 'ORGANISER')">
 						<a th:href="@{/events/delete_event(ID=${event.id})}" role="button" class="btn btn-danger">
 						Delete<i class="fas fa-trash" aria-hidden="false"></i></a>
 				  </div>
