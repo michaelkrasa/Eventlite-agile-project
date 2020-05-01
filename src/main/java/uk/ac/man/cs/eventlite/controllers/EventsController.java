@@ -37,6 +37,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 import twitter4j.Query;
 import twitter4j.QueryResult;
@@ -227,15 +228,23 @@ public class EventsController {
 	}
 	
 	@RequestMapping(value = "/{eventId}/tweeted", method = RequestMethod.GET)
-	public String updateStatus(@RequestParam (value = "tweet", required = false) String tweet, @PathVariable String eventId) throws TwitterException {
+	public RedirectView updateStatus(@RequestParam (value = "tweet", required = false) String tweet, RedirectAttributes redir, @PathVariable String eventId) throws TwitterException {
 		
 		if (!tweet.isEmpty()) {	
-		log.info("Tweet sent - " + tweet);
-		Twitter twitter = TwitterService();
-		twitter.updateStatus(tweet);
+			log.info("Tweet sent - " + tweet);
+			Twitter twitter = TwitterService();
+			twitter.updateStatus(tweet);
+			RedirectView redirectView = new RedirectView("/events/" + eventId,true);
+			redir.addFlashAttribute("tweet_success", "Tweet sent successfully!");
+			return redirectView;
 		}
+		else {
+			RedirectView redirectView = new RedirectView("/events/" + eventId,true);
+			redir.addFlashAttribute("tweet_fail", "Please type a message to tweet");
+			return redirectView;
+		}
+
 		
-		return ("redirect:/events/" + eventId);
 	}
 	
 	public Twitter TwitterService() {

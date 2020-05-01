@@ -52,7 +52,9 @@
 		</div>
 		
 		<h5><i class="fab fa-twitter"></i> Share the event</h5>
-		
+		<p class="bg-success text-white rounded" th:if="${tweet_success}" th:value="${tweet_success}">Success</p>
+	  	<p class="bg-danger text-white rounded" th:if="${tweet_fail}" th:value="${tweet_fail}">Fail</p>
+	  	
 		<form th:action="@{'/events/' + ${event.id} + '/tweeted'}" th:object="${event}" method="get">
 	  		<div class="form-row">
 		  		<div class="col-md-11 my-1">
@@ -63,6 +65,7 @@
 	      		</div>
 			</div>
 	  	</form>
+	  	
 	  	
 	  	
 
