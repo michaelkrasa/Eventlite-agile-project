@@ -38,6 +38,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.verification.VerificationMode;
@@ -52,9 +53,15 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
+import org.springframework.web.servlet.view.RedirectView;
 
+import twitter4j.Twitter;
+import twitter4j.auth.AccessToken;
 import uk.ac.man.cs.eventlite.config.Security;
 import uk.ac.man.cs.eventlite.EventLite;
 import uk.ac.man.cs.eventlite.dao.EventService;
@@ -81,6 +88,12 @@ public class EventsControllerTest {
 
 	@Mock
 	private Venue venue;
+	
+	@Mock
+	private Twitter twitter;
+	
+	@Mock
+	private Model model;
 
 	@Mock
 	private EventService eventService;
@@ -443,5 +456,54 @@ public class EventsControllerTest {
 		verify(eventService, VerificationModeFactory.times(1)).findById(ID);
 		verify(venueService, VerificationModeFactory.times(1)).findAll();
 	}
+	
+//	@Test
+//	public void postNonEmptyTweet() throws Exception{
+//
+//		String tweet = "test tweet";
+//		
+//		Event e = new Event();
+//		e.setName("testEvent");
+//		e.setTime(null);
+//		e.setDate(null);
+//		e.setVenue(null);
+//		long eventId = (long)1;
+//		e.setId(eventId);	
+//		Optional<Event> testEvent = Optional.of(e);
+//		
+////		RedirectAttributes redir = new RedirectAttributesModelMap();
+////		
+////		when(eventsController.updateStatus(tweet, redir, ID).thenReturn(null));
+//		when(eventService.findById(eventId)).thenReturn(testEvent);
+//		
+//		mvc.perform(get("/events/{id}/tweeted", eventId).param("tweet", tweet).accept(MediaType.TEXT_HTML)).andExpect(status().is(302))
+//			.andExpect(flash().attributeExists("tweet_success"))
+//			.andExpect(model().attributeDoesNotExist("tweet_fail"))
+//			.andExpect(handler().methodName("updateStatus"));
+//		
+//	}
+//	
+//	@Test
+//	public void postEmptyTweet() throws Exception {
+//		
+//		String tweet = "";
+//		
+//		Event e = new Event();
+//		e.setName("testEvent");
+//		e.setTime(null);
+//		e.setDate(null);
+//		e.setVenue(null);
+//		long eventId = (long)1;
+//		e.setId(eventId);	
+//		Optional<Event> testEvent = Optional.of(e);
+//		
+//		when(eventService.findById(eventId)).thenReturn(testEvent);
+//		
+//		mvc.perform(get("/events/{id}/tweeted", eventId).param("tweet", tweet).accept(MediaType.TEXT_HTML)).andExpect(status().is(302))
+//			.andExpect(flash().attributeExists("tweet_fail"))
+//			.andExpect(model().attributeDoesNotExist("tweet_success"))
+//			.andExpect(handler().methodName("updateStatus"));
+//		
+//	}
 	
 }
