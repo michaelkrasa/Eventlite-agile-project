@@ -11,7 +11,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static uk.ac.man.cs.eventlite.testutil.MessageConverterUtil.getMessageConverters;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Collections;
+import java.util.Optional;
 
 import javax.servlet.Filter;
 
@@ -34,6 +37,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import uk.ac.man.cs.eventlite.EventLite;
 import uk.ac.man.cs.eventlite.dao.VenueService;
+import uk.ac.man.cs.eventlite.dao.EventService;
+import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
 @ExtendWith(SpringExtension.class)
@@ -50,6 +55,8 @@ public class VenuesControllerApiTest {
 
 	@Mock
 	private VenueService venueService;
+	@Mock
+	private EventService eventService;
 
 	@InjectMocks
 	private VenuesControllerApi venuesController;
@@ -90,5 +97,31 @@ public class VenuesControllerApiTest {
 				.andExpect(jsonPath("$._embedded.venues[0]._links.next3events.href", endsWith("venues/0/next3events")));
 
 		verify(venueService).findAll();
+	}
+	
+	@Test
+	public void getAllEventsForVenue() throws Exception {
+		long venueId = 0;
+		Venue v = new Venue();
+		v.setId(venueId);
+		v.setName("Venue");
+		v.setCapacity(100);		
+		
+		Event e = new Event();
+		e.setId(0);
+		e.setName("Event");
+		e.setDate(LocalDate.now());
+		e.setTime(LocalTime.now());
+		e.setVenue(v);
+		
+		when(venueService.findById(venueId)).thenReturn(Optional.of(v));
+		when(eventService.findAllByVenue(v)).thenReturn(Collections.<Event>singletonList(e));
+		
+		mvc.perform(get("/api/venues/0/events").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+			.andExpect(handler().methodName("getEventsForVenue")).andExpect(jsonPath("$.length()", equalTo(1)))
+			.andExpect(jsonPath("$._embedded.events.length()", equalTo(1)));
+		
+		verify(venueService).findById(venueId);
+		verify(eventService).findAllByVenue(v);
 	}
 }
