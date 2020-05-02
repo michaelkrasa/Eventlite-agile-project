@@ -13,7 +13,9 @@ import static uk.ac.man.cs.eventlite.testutil.MessageConverterUtil.getMessageCon
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.Filter;
@@ -123,5 +125,45 @@ public class VenuesControllerApiTest {
 		
 		verify(venueService).findById(venueId);
 		verify(eventService).findAllByVenue(v);
+	}
+	
+	@Test
+	public void getNext3Events() throws Exception {
+		long venueId = 0;
+		int num = 1;
+
+		Venue v = new Venue();
+		v.setId(venueId);
+		v.setName("Venue");
+		v.setCapacity(100);
+
+		Event e1 = new Event();
+		Event e2 = new Event();
+		Event e3 = new Event();
+
+		List<Event> events = new ArrayList<Event>();
+		events.add(e1);
+		events.add(e2);
+		events.add(e3);
+
+		for(Event e : events) {
+			e.setId(num);
+			e.setName("Event " + num);
+			e.setDate(LocalDate.now());
+			e.setTime(LocalTime.now());
+			e.setVenue(v);
+			num++;
+		}
+
+		when(venueService.findById(venueId)).thenReturn(Optional.of(v));
+		when(eventService.findAllByVenue(v)).thenReturn(events);
+
+		mvc.perform(get("/api/venues/0/next3events").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+			.andExpect(handler().methodName("getNext3Events")).andExpect(jsonPath("$.length()", equalTo(1)))
+			.andExpect(jsonPath("$._embedded.events.length()", equalTo(3)));
+
+		verify(venueService).findById(venueId);
+		verify(eventService).findAllByVenue(v);
+
 	}
 }

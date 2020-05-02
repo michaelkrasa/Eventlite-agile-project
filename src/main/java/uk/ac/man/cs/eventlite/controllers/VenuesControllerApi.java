@@ -51,6 +51,29 @@ public class VenuesControllerApi {
 		return new Resources<Resource<Event>>(resources);
 	}
 	
+	
+	// Shows next 3 events that are at the specified venue
+	@RequestMapping(value = "/{id}/next3events", method = RequestMethod.GET)
+	public Resources<Resource<Event>> getNext3Events(@PathVariable("id") long id) {
+
+		// Get next 3 events at that venue
+		List<Event> events = eventService.findAllByVenue(venueService.findById(id).get());
+		List<Event> resultEvents = new ArrayList<Event>();
+
+		for(Event e : events) {
+			if(resultEvents.size() < 3)
+				resultEvents.add(e);
+			else break;
+		}
+		
+		List<Resource<Event>> resources = new ArrayList<Resource<Event>>();
+		for (Event event : events) {
+			resources.add(eventToResource(event));
+		}
+		return new Resources<Resource<Event>>(resources);
+	}
+	
+	
 	private Resource<Event> eventToResource(Event event) {
 		Link selfLink = linkTo(EventsControllerApi.class).slash(event.getId()).withSelfRel();
 		Link venueLink = linkTo(EventsControllerApi.class).slash(event.getId()).slash("venue").withRel("venue");
