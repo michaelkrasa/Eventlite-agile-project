@@ -235,7 +235,7 @@ public class EventsController {
 			Twitter twitter = TwitterService();
 			twitter.updateStatus(tweet);
 			RedirectView redirectView = new RedirectView("/events/" + eventId,true);
-			redir.addFlashAttribute("tweet_success", "Tweet sent successfully!");
+			redir.addFlashAttribute("tweet_success", tweet);
 			return redirectView;
 		}
 		else {
@@ -269,20 +269,5 @@ public class EventsController {
 		
 		model.addAttribute("past_tweets", statuses);
 	}
-	
-//	public void findTweets(Model model)  throws TwitterException {
-//		log.info("searching for tweet");
-//		
-//		Twitter twitter = TwitterService();
-//		
-//		String queryString = "Very specific tweet: COMP23412 Showcase, group Alpha 3";
-//		
-//		Query query = new Query(queryString);
-//		QueryResult result = twitter.search(query);
-//		
-//		List<Status> tweets = result.getTweets();
-//		
-//		model.addAttribute("search_specific_tweet", tweets);
-//	}
 	
 }
