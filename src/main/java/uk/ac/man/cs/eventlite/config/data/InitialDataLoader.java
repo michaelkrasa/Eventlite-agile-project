@@ -45,14 +45,14 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			
 			testVenue.setName("Kilburn G23");
 			testVenue.setCapacity(80);
-			// set lcoation to kilburn
+			// set location to Kilburn
 			testVenue.setAddress1("Kilburn Building");
 			testVenue.setCity("Manchester");
 			testVenue.updateLocation();
 			
 			testVenue2.setName("Kilburn LF31");
 			testVenue2.setCapacity(60);
-			// set lcoation to kilburn
+			// set location to Kilburn
 			testVenue2.setAddress1("Kilburn Building");
 			testVenue2.setCity("Manchester");
 			testVenue2.updateLocation();
@@ -77,6 +77,7 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			testEvent2.setDate(LocalDate.of(2020,05,05));
 			testEvent2.setTime(LocalTime.of(10,00));
 			testEvent2.setVenue(testVenue);
+			testEvent2.setDescription("Showcase of team project for group H");
 			eventService.save(testEvent2);
 			log.info("Added event (" + testEvent2.getId() + ") to the database.");
 			
@@ -90,16 +91,16 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			log.info("Added event (" + testEvent3.getId() + ") to the database.");
 			
 			Event testEvent4 = new Event();
-			testEvent4.setName("COMP23412 Showcase, group Test");
+			testEvent4.setName("COMP23412 Showcase, group E");
 			testEvent4.setDate(LocalDate.of(2020,05,07));
 			testEvent4.setTime(LocalTime.of(10,00));
 			testEvent4.setVenue(testVenue);
-			testEvent4.setDescription("");
+			testEvent4.setDescription("A sensible description");
 			eventService.save(testEvent4);
 			log.info("Added event (" + testEvent4.getId() + ") to the database.");
 			
 			Event testEvent5 = new Event();
-			testEvent5.setName("COMP23412 Showcase, group Past");
+			testEvent5.setName("COMP23412 Showcase, group Past 1");
 			testEvent5.setDate(LocalDate.of(2018,05,07));
 			testEvent5.setTime(LocalTime.of(14,00));
 			testEvent5.setVenue(testVenue2);
@@ -112,24 +113,27 @@ public class InitialDataLoader implements ApplicationListener<ContextRefreshedEv
 			testEvent6.setDate(LocalDate.of(2018,05,07));
 			testEvent6.setTime(LocalTime.of(10,00));
 			testEvent6.setVenue(testVenue);
-			eventService.save(testEvent6);
 			testEvent6.setDescription("Showcase of team project for another past event");
+			eventService.save(testEvent6);			
 			log.info("Added event (" + testEvent6.getId() + ") to the database.");
 			
 			Event testEvent7 = new Event();
-			testEvent7.setName("COMP23412 Showcase, group Beta 3");
+			testEvent7.setName("COMP23412 Showcase, group Past 3");
 			testEvent7.setDate(LocalDate.of(2018,03,07));
 			testEvent7.setTime(LocalTime.of(20,30));
 			testEvent7.setVenue(testVenue2);
+			testEvent7.setDescription("Showcase of team project for yet another past event");
 			eventService.save(testEvent7);
 			log.info("Added event (" + testEvent7.getId() + ") to the database.");
 			
 			Event testEvent8 = new Event();
-			testEvent8.setName("COMP23412 Showcase, group Alpha 3");
+			testEvent8.setName("COMP23412 Showcase, group I");
 			testEvent8.setDate(LocalDate.of(2020,05,07));
 			testEvent8.setTime(LocalTime.of(10,00));
 			testEvent8.setVenue(testVenue);
+			testEvent8.setDescription("Showcase of team project for group I");
 			eventService.save(testEvent8);
+			
 			log.info("Added event (" + testEvent8.getId() + ") to the database.");
 			
 			log.info("[Database seeding] : Finished");
