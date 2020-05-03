@@ -475,11 +475,17 @@ public class EventsControllerTest {
 ////		
 ////		when(eventsController.updateStatus(tweet, redir, ID).thenReturn(null));
 //		when(eventService.findById(eventId)).thenReturn(testEvent);
+//		// DO NOT CALL TWITTER API. aka do nothing
+//		doNothing().when(twitter.updateStatus(tweet));
 //		
 //		mvc.perform(get("/events/{id}/tweeted", eventId).param("tweet", tweet).accept(MediaType.TEXT_HTML)).andExpect(status().is(302))
 //			.andExpect(flash().attributeExists("tweet_success"))
 //			.andExpect(model().attributeDoesNotExist("tweet_fail"))
 //			.andExpect(handler().methodName("updateStatus"));
+		
+		
+//		// check how many times update status was called to ensure it was not sent twice
+//		verify(twitter, VerificationModeFactory.times(1)).updateStatus(tweet);
 //		
 //	}
 //	
