@@ -50,6 +50,7 @@ import uk.ac.man.cs.eventlite.dao.EventService;
 //import uk.ac.man.cs.eventlite.dao.TwitterService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
+import uk.ac.man.cs.eventlite.utils.TwitterUtils;
 
 @Controller
 @RequestMapping(value = "/events", produces = { MediaType.TEXT_HTML_VALUE })
@@ -63,6 +64,9 @@ public class EventsController {
 	
 	@Autowired 
 	private VenueService venueService;
+	
+	@Autowired
+	private TwitterUtils twitterUtils;
 	
 //	@Autowired
 //	private TwitterService twitterService;
@@ -232,7 +236,7 @@ public class EventsController {
 		
 		if (!tweet.isEmpty()) {	
 			log.info("Tweet sent - " + tweet);
-			Twitter twitter = TwitterService();
+			Twitter twitter = twitterUtils.getTwitterInstance();
 			twitter.updateStatus(tweet);
 			RedirectView redirectView = new RedirectView("/events/" + eventId,true);
 			redir.addFlashAttribute("tweet_success", tweet);
@@ -247,22 +251,11 @@ public class EventsController {
 		
 	}
 	
-	public Twitter TwitterService() {
-		ConfigurationBuilder cb = new ConfigurationBuilder();	
-		cb.setDebugEnabled(true)
-		  .setOAuthConsumerKey("S3XBupwKFKkDrViDlXBsnSp3H")
-		  .setOAuthConsumerSecret("Y3ZdNVPDUyWZx85mnU2fEj5vTKfvVb234kKTjtIINhkBD9Rcl0")
-		  .setOAuthAccessToken("1254555795431227394-Px2eytiI8IvU8x9YnKRgZwAKLl8Auk")
-		  .setOAuthAccessTokenSecret("5SnhT8p2Cs2z7Ye4XisalmSghh1sTzcO9OtuvIxzoinb3");
-		TwitterFactory tf = new TwitterFactory(cb.build());
-		Twitter twitter = tf.getInstance();
-		return twitter;
-	}
 	
 	public void getPastTweets(Model model) throws TwitterException {
 		log.info("Past tweets loaded");
 		
-		Twitter twitter = TwitterService();
+		Twitter twitter = twitterUtils.getTwitterInstance();
 		
 		List<Status> statuses = twitter.getHomeTimeline();
 		if (statuses.size() > 5) statuses = statuses.subList(0, 5);
