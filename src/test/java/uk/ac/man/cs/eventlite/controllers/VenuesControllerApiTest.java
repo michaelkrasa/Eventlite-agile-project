@@ -102,6 +102,28 @@ public class VenuesControllerApiTest {
 	}
 	
 	@Test
+	public void getVenueById() throws Exception {
+		long id = 0;
+		Venue v = new Venue();
+		v.setId(id);
+		v.setName("Venue");
+		v.setCapacity(100);
+		
+		when(venueService.findById(id)).thenReturn(Optional.of(v));
+		
+		mvc.perform(get("/api/venues/0").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+			.andExpect(handler().methodName("getVenueById")).andExpect(jsonPath("$.length()", equalTo(1)))
+			.andExpect(jsonPath("$._embedded.venues[0]._links.self.href", endsWith("/api/venues/0")))
+			.andExpect(jsonPath("$._embedded.venues.length()", equalTo(1)))
+			.andExpect(jsonPath("$._embedded.venues[0]._links.venue.href", endsWith("venues/0")))
+			.andExpect(jsonPath("$._embedded.venues[0]._links.events.href", endsWith("venues/0/events")))
+			.andExpect(jsonPath("$._embedded.venues[0]._links.next3events.href", endsWith("venues/0/next3events")));
+		
+		verify(venueService).findById(id);
+	}
+	
+	
+	@Test
 	public void getAllEventsForVenue() throws Exception {
 		long venueId = 0;
 		Venue v = new Venue();

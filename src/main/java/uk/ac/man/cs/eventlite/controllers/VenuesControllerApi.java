@@ -37,6 +37,17 @@ public class VenuesControllerApi {
 		return venueToResource(venueService.findAll());
 	}
 	
+	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
+	public Resources<Resource<Venue>> getVenueById(@PathVariable("id") long id) {
+		List<Resource<Venue>> resources = new ArrayList<Resource<Venue>>();
+		
+		Venue venue = venueService.findById(id).get();
+		
+		resources.add(venueToResource(venue));
+		
+		return new Resources<Resource<Venue>>(resources);
+	}
+	
 	// Shows all events that are at the specified venue
 	@RequestMapping(value = "/{id}/events", method = RequestMethod.GET)
 	public Resources<Resource<Event>> getEventsForVenue(@PathVariable("id") long id) {
