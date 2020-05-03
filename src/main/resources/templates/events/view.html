@@ -50,6 +50,25 @@
 			  </li>
 		  </ul>
 		</div>
+		
+		<p class="p-2 bg-success text-black rounded" th:if="${tweet_success}" th:value="${tweet_success}" th:utext=" '  Your tweet: <b>' + ${tweet_success} + '</b> was posted'">Success</p>
+	  	<p class="p-2 bg-danger text-black rounded" th:if="${tweet_fail}" th:value="${tweet_fail}" th:text=" '  Can not post empty tweet. Please type something in . . .'">Fail</p>
+		
+		<h5><i class="fab fa-twitter"></i> Share the event</h5>
+		
+		<form th:action="@{'/events/' + ${event.id} + '/tweeted'}" th:object="${event}" method="get">
+	  		<div class="form-row">
+		  		<div class="col-md-11 my-1">
+		    		<input class="form-control my-0 py-1 col" type="text" id="tweet" name="tweet" th_field="*{tweet}" th:placeholder="${event.name}" />
+		  		</div>
+		  		<div class="col-auto my-1">
+	        		<input class="btn btn-primary mb-2" type="submit" value="Tweet"/>
+	      		</div>
+			</div>
+	  	</form>
+	  	
+	  	
+	  	
 
     <div id='map' style='width: 100%; height: 350px;'></div>
 	  <script th:inline="javascript">

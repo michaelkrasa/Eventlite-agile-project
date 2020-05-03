@@ -27,7 +27,12 @@ import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Optional;
 
 import javax.servlet.Filter;
@@ -38,6 +43,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.mockito.verification.VerificationMode;
@@ -52,15 +58,34 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
+import org.springframework.web.servlet.view.RedirectView;
 
+import twitter4j.GeoLocation;
+import twitter4j.HashtagEntity;
+import twitter4j.MediaEntity;
+import twitter4j.Place;
+import twitter4j.RateLimitStatus;
+import twitter4j.ResponseList;
+import twitter4j.Scopes;
+import twitter4j.Status;
+import twitter4j.SymbolEntity;
+import twitter4j.Twitter;
+import twitter4j.URLEntity;
+import twitter4j.User;
+import twitter4j.UserMentionEntity;
+import twitter4j.auth.AccessToken;
 import uk.ac.man.cs.eventlite.config.Security;
 import uk.ac.man.cs.eventlite.EventLite;
 import uk.ac.man.cs.eventlite.dao.EventService;
 import uk.ac.man.cs.eventlite.dao.VenueService;
 import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
+import uk.ac.man.cs.eventlite.utils.TwitterUtils;
 
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = EventLite.class)
@@ -75,18 +100,30 @@ public class EventsControllerTest {
 
 	@Autowired
 	private Filter springSecurityFilterChain;
+	
+	@Mock
+	private TwitterUtils twitterUtil;
 
 	@Mock
 	private Event event;
 
 	@Mock
 	private Venue venue;
+	
+	@Mock
+	private Twitter twitter;
+	
+	@Mock
+	private Model model;
 
 	@Mock
 	private EventService eventService;
 
 	@Mock
 	private VenueService venueService;
+	
+	@Mock
+	ResponseList<Status> statusList;
 
 	@InjectMocks
 	private EventsController eventsController;
@@ -102,6 +139,12 @@ public class EventsControllerTest {
 	public void getIndexWhenNoEvents() throws Exception {
 		when(eventService.findAll()).thenReturn(Collections.<Event> emptyList());
 		when(venueService.findAll()).thenReturn(Collections.<Venue> emptyList());
+		
+		// when twitter is called, pass it a mock and dont actually update anything
+		when(twitterUtil.getTwitterInstance()).thenReturn(twitter);
+		// return an empty list of last few tweets
+
+		when(twitter.getHomeTimeline()).thenReturn(statusList);
 
 		mvc.perform(get("/events").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 				.andExpect(view().name("events/index")).andExpect(handler().methodName("getAllEvents"));
@@ -118,6 +161,11 @@ public class EventsControllerTest {
 		e.setDate(LocalDate.now());
 		when(eventService.findAll()).thenReturn(Collections.<Event> singletonList(e));
 		when(venueService.findAll()).thenReturn(Collections.<Venue> singletonList(venue));
+		
+		// when twitter is called, pass it a mock and dont actually update anything
+		when(twitterUtil.getTwitterInstance()).thenReturn(twitter);
+		// return an empty list of last few tweets
+		when(twitter.getHomeTimeline()).thenReturn(statusList);
 
 		mvc.perform(get("/events").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 				.andExpect(view().name("events/index")).andExpect(handler().methodName("getAllEvents"));
@@ -130,6 +178,11 @@ public class EventsControllerTest {
 	public void getIndexWithNoEventsSearch() throws Exception {
 		when(eventService.findAllByNameContainingIgnoreCase(null)).thenReturn(Collections.<Event> emptyList());
 		when(venueService.findAll()).thenReturn(Collections.<Venue> emptyList());
+		
+		// when twitter is called, pass it a mock and dont actually update anything
+		when(twitterUtil.getTwitterInstance()).thenReturn(twitter);
+		// return an empty list of last few tweets
+		when(twitter.getHomeTimeline()).thenReturn(statusList);
 		
 		mvc.perform(get("/events/foundEvents").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
 		.andExpect(view().name("events/index")).andExpect(handler().methodName("getAllByName"));
@@ -146,6 +199,11 @@ public class EventsControllerTest {
 		e.setName("test");
 		when(eventService.findAllByNameContainingIgnoreCase(null)).thenReturn(Collections.<Event> singletonList(e));
 		when(venueService.findAll()).thenReturn(Collections.<Venue> singletonList(venue));
+		
+		// when twitter is called, pass it a mock and dont actually update anything
+		when(twitterUtil.getTwitterInstance()).thenReturn(twitter);
+		// return an empty list of last few tweets
+		when(twitter.getHomeTimeline()).thenReturn(statusList);
 
 
 		mvc.perform(get("/events/foundEvents").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
@@ -193,6 +251,12 @@ public class EventsControllerTest {
 	@Test
 	public void getNullEventFromID() throws Exception {
 		when(eventService.findById(0L)).thenReturn(Optional.empty());
+		
+		// Need to mock twitter in this method because it reroutes to index when the event is not found
+		// when twitter is called, pass it a mock and dont actually update anything
+		when(twitterUtil.getTwitterInstance()).thenReturn(twitter);
+		// return an empty list of last few tweets
+		when(twitter.getHomeTimeline()).thenReturn(statusList);
 		
 		// routes to index as event 0 doesnt exist
 		mvc.perform(get("/events/0").accept(MediaType.TEXT_HTML)).andExpect(status().isOk())
@@ -442,6 +506,68 @@ public class EventsControllerTest {
 		
 		verify(eventService, VerificationModeFactory.times(1)).findById(ID);
 		verify(venueService, VerificationModeFactory.times(1)).findAll();
+	}
+	
+	@Test
+	public void postNonEmptyTweet() throws Exception{
+
+		String tweet = "test tweet";
+		
+		Event e = new Event();
+		e.setName("testEvent");
+		e.setTime(null);
+		e.setDate(null);
+		e.setVenue(null);
+		long eventId = (long)1;
+		e.setId(eventId);	
+		Optional<Event> testEvent = Optional.of(e);
+		
+//		RedirectAttributes redir = new RedirectAttributesModelMap();
+//		
+//		when(eventsController.updateStatus(tweet, redir, ID).thenReturn(null));
+		when(eventService.findById(eventId)).thenReturn(testEvent);
+		
+		// when twitter is called, pass it a mock and dont actually update anything
+		when(twitterUtil.getTwitterInstance()).thenReturn(twitter);
+		when(twitter.updateStatus(tweet)).thenReturn(null);
+		
+		mvc.perform(get("/events/{id}/tweeted", eventId).param("tweet", tweet).accept(MediaType.TEXT_HTML)).andExpect(status().is(302))
+			.andExpect(flash().attributeExists("tweet_success"))
+			.andExpect(model().attributeDoesNotExist("tweet_fail"))
+			.andExpect(handler().methodName("updateStatus"));
+		
+
+		// make sure only 1 twitter instance was created
+		verify(twitterUtil, VerificationModeFactory.times(1)).getTwitterInstance();
+		// check how many times update status was called to ensure it was not sent twice
+		verify(twitter, VerificationModeFactory.times(1)).updateStatus(tweet);
+		
+	}
+	
+	@Test
+	public void postEmptyTweet() throws Exception {
+		
+		String tweet = "";
+		
+		Event e = new Event();
+		e.setName("testEvent");
+		e.setTime(null);
+		e.setDate(null);
+		e.setVenue(null);
+		long eventId = (long)1;
+		e.setId(eventId);	
+		Optional<Event> testEvent = Optional.of(e);
+		
+		when(eventService.findById(eventId)).thenReturn(testEvent);
+		
+		when(twitterUtil.getTwitterInstance()).thenReturn(twitter);
+		when(twitter.updateStatus(tweet)).thenReturn(null);
+		
+		mvc.perform(get("/events/{id}/tweeted", eventId).param("tweet", tweet).accept(MediaType.TEXT_HTML)).andExpect(status().is(302))
+			.andExpect(flash().attributeExists("tweet_fail"))
+			.andExpect(model().attributeDoesNotExist("tweet_success"))
+			.andExpect(handler().methodName("updateStatus"));
+		
 	}
 	
 }
