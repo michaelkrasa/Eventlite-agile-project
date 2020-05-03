@@ -67,7 +67,7 @@ public class VenuesControllerApi {
 		}
 		
 		List<Resource<Event>> resources = new ArrayList<Resource<Event>>();
-		for (Event event : events) {
+		for (Event event : resultEvents) {
 			resources.add(eventToResource(event));
 		}
 		return new Resources<Resource<Event>>(resources);

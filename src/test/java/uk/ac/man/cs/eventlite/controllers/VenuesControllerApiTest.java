@@ -140,11 +140,13 @@ public class VenuesControllerApiTest {
 		Event e1 = new Event();
 		Event e2 = new Event();
 		Event e3 = new Event();
-
+		Event e4 = new Event();
+		
 		List<Event> events = new ArrayList<Event>();
 		events.add(e1);
 		events.add(e2);
 		events.add(e3);
+		events.add(e4);
 
 		for(Event e : events) {
 			e.setId(num);
