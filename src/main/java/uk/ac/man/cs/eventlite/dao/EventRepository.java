@@ -20,6 +20,6 @@ public interface EventRepository extends CrudRepository<Event, Long>{
 
 	List<Event> findAllByVenue(Venue venue, Sort by);
 	
-	public Iterable<Event> findTop3ByDateGreaterThanEqualOrderByDateAscNameAsc(LocalDate date);
+	public Iterable<Event> findTop3ByDateGreaterThanEqualOrderByDateAscTimeAscNameAsc(LocalDate date);
 	
 }

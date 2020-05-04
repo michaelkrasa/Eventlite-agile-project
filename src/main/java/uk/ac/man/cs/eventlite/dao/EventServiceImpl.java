@@ -73,7 +73,7 @@ public class EventServiceImpl implements EventService {
 	
 	@Override
 	public Iterable<Event> find3Upcoming(){
-		return eventRepository.findTop3ByDateGreaterThanEqualOrderByDateAscNameAsc(today);
+		return eventRepository.findTop3ByDateGreaterThanEqualOrderByDateAscTimeAscNameAsc(today);
 	}
 	
 }
