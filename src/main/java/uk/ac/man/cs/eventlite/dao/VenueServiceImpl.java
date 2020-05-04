@@ -52,8 +52,8 @@ public class VenueServiceImpl implements VenueService {
 	}
 	
 	@Override
-	public List<Venue> findTop3Venues(){
-		if (count() < 3) {
+	public Iterable<Venue> findTop3Venues(){
+		if (venueRepository.findTop3ByNameAsc().size() < 3) {
 			return venueRepository.findTop3ByNameAsc();
 		}
 		else {
