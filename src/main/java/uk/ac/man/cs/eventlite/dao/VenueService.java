@@ -1,7 +1,7 @@
 package uk.ac.man.cs.eventlite.dao;
+import java.util.List;
 import java.util.Optional;
 
-import uk.ac.man.cs.eventlite.entities.Event;
 import uk.ac.man.cs.eventlite.entities.Venue;
 
 public interface VenueService {
@@ -18,6 +18,6 @@ public interface VenueService {
 	
 	public Iterable<Venue> findAllByNameContainingIgnoreCase(String name);
 	
-	public Iterable<Venue> findTop3Venues();
+	public List<Venue> findTop3Venues();
 	
 }
