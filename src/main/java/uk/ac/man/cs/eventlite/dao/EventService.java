@@ -24,4 +24,6 @@ public interface EventService {
 	
 	public List<Event> findAllByVenue(Venue venue);
 	
+	public Iterable<Event> find3Upcoming();
+	
 }

@@ -33,6 +33,8 @@ public class EventServiceImpl implements EventService {
 	private final static Logger log = LoggerFactory.getLogger(EventServiceImpl.class);
 
 	private final static String DATA = "data/events.json";
+	
+	private LocalDate today = LocalDate.now();
 
 	@Override
 	public long count() {
@@ -67,6 +69,11 @@ public class EventServiceImpl implements EventService {
 	@Override
 	public List<Event> findAllByVenue(Venue venue) {
 		return eventRepository.findAllByVenue(venue, Sort.by("date", "time", "name"));
+	}
+	
+	@Override
+	public Iterable<Event> find3Upcoming(){
+		return eventRepository.findTop3ByDateGreaterThanEqualOrderByDateAscNameAsc(today);
 	}
 	
 }
