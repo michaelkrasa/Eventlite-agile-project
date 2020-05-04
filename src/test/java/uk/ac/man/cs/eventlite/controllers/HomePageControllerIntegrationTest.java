@@ -45,7 +45,7 @@ public class HomePageControllerIntegrationTest extends AbstractTransactionalJUni
 	}
 
 	@Test
-	public void testGetAllEvents() {
+	public void testGetIndexAttributes() {
 		ResponseEntity<String> response = template.exchange("/", HttpMethod.GET, httpEntity, String.class);
 
 		assertThat(response.getStatusCode(), equalTo(HttpStatus.OK));
